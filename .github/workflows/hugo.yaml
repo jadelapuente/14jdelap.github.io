@@ -1,14 +1,10 @@
-name: Deploy Hugo PaperMod Demo to Pages
+name: Deploy Hugo site to Pages
 
 on:
   push:
-    paths-ignore:
-      - "images/**"
-      - "LICENSE"
-      - "README.md"
-    branches:
-      - main
-      - josedelapuente.com
+    branches: ["main"]
+
+  # Run the workflow manually from the Actions tab
   workflow_dispatch:
     # manual run
     inputs:
@@ -50,18 +46,21 @@ jobs:
           ref: josedelapuente.com
       - name: Setup Pages
         id: pages
-        uses: actions/configure-pages@v3
-      - name: Get Theme
-        run: git submodule update --init --recursive
-      - name: Update theme to Latest commit
-        run: git submodule update --remote --merge
+        uses: actions/configure-pages@v4
+      # - name: Get Theme
+      #   run: git submodule update --init --recursive
+      # - name: Update theme to Latest commit
+      #   run: git submodule update --remote --merge
       - name: Build with Hugo
+        env:
+          HUGO_ENVIRONMENT: production
+          HUGO_ENV: production
         run: |
           hugo \
             --buildDrafts --gc \
             --baseURL ${{ steps.pages.outputs.base_url }}
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./public
   # Deployment job
@@ -74,4 +73,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
