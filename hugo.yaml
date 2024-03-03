@@ -1,0 +1,24 @@
+baseURL: https://josedelapuente.com/
+languageCode: en-us
+title: José de la Puente
+theme: "PaperMod"
+params:
+  defaultTheme: dark
+  disableThemeToggle: true
+  hideFooter: true
+  homeInfoParams:
+    Content: |
+      I'm a software engineer at [Thought Machine's](https://thoughtmachine.net) Scheduling team, where I work on a high-throughput event processing pipeline. Before that, I was at [Snyk's](https://snyk.io) API infrastructure team.
+
+      I recently built [Horus](https://tryhorus.com), a full-stack observability system for distributed microservices.
+
+      If you only read one thing,
+
+  socialIcons:
+    - name: "twitter"
+      url: "https://twitter.com/josedlpuente"
+    - name: "github"
+      url: "https://github.com/14jdelap"
+    - name: "linkedin"
+      url: "https://www.linkedin.com/in/ja-puente/"
+pygmentsOptions: "linenos=table"
