@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Technology on José de la Puente</title>
+    <link>https://josedelapuente.com/categories/technology/</link>
+    <description>Recent content in Technology on José de la Puente</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 03 Feb 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://josedelapuente.com/categories/technology/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Voice&#39;s impending iPhone moment</title>
+      <link>https://josedelapuente.com/posts/ais-iphone-moment/</link>
+      <pubDate>Sat, 03 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/posts/ais-iphone-moment/</guid>
+      <description>Better LLM models and more efficient microprocessor architectures will lead to a new dominant interface: voice.</description>
+    </item>
+  </channel>
+</rss>
