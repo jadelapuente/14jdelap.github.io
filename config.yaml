@@ -1,4 +1,4 @@
-baseURL: https://josedelapuente.com/
+baseURL: "https://josedelapuente.com/"
 languageCode: en-us
 title: José de la Puente
 theme: "PaperMod"
