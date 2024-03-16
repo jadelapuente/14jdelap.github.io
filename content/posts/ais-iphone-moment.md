@@ -6,8 +6,8 @@ summary: "Better LLM models and more efficient microprocessor architectures will
 tags: ["ai", "llm", "ui/ux", "interface design"]
 categories: ["technology", "society"]
 series: ["AI"]
-ShowToc: true
-TocOpen: true
+ShowToc: false
+TocOpen: false
 ---
 
 Ben Thompson recently wrote in Stratechery about "The Impending VR Moment" ([link](https://stratechery.com/2024/sora-groq-and-virtual-reality/)).
@@ -18,20 +18,28 @@ I'd summarize his argument as:
 - Transformer-based models like Sora will run much more quickly in chips with  architectures designed for their computational needs rather than GPUs, like Groq has shown ([link](https://groq.com/))
 - Thus, given the development of these technologies and AI hardware like the Apple Vision Pro or Meta Quest we're directed towards an "iPhone moment" for VR
 
-I think Ben's right, but I also think it misses the more significant moment: these same drivers will enable voice as the next dominant interface.
-
-## How we got to the smartphone's domination
+I think Ben's right, but I also think it misses an equally significant moment: these same drivers will make voice the next dominant interface.
 
 {{< youtube GK55ElsVzxM >}}
-
+  
 > "So three things: a widescreen iPod with touch controls, a revolutionary mobile phone and a breakthrough internet communications device. An iPod, a phone, and an internet communicator... Are you getting it?"
 
-The iPhone —and all succeeding smartphones— collapsed all devices into 1. It replaced paper maps (does anyone use them anymore?), personal music players like the iPod or Walkman, long-distance phone calls through WhatsApp, cameras
+The iPhone — and all succeeding smartphones — collapsed all devices into 1. It replaced paper maps (does anyone use them anymore?), personal music players like the iPod or Walkman, long-distance phone calls through WhatsApp, cameras, newspapers and magazines, the TV and radio... and so much more.
 
-- The iPhone collapsed all devices into 1: maps, computers, GPS, walkmans, etc
-- Thus, the reigning interface was graphical and textual (including for computers)
+We went from many devices to one: a monochromatic rectangle with a touchscreen.
 
-## Voice as an interface
+In contrast, language is our original interface — hundreds of thousands if not millions of years old. No wonder why older people struggle with new technology (which usually involve screens) but can still solve problems by talking.
+
+My former teacher, the inspiring Javier Cañada, recently spoke about why he thinks voice is the best interface. Some of his arguments include:
+
+- Voice is inmaterial and doesn't take space, unlike pixels on a screen
+- Voice frees up the senses as you don't need to use multiple senses simultaneously (unlike sight and gesture with graphical interfaces)
+- Voice is the most accessible interface, you just need to be able to speak
+- Voice has emotiveness because it has intonation
+- Voice has personality, how each of us speaks is unique
+
+While the uptick of voice assistants, like Alexa and Siri, have made voice a more prominent interface to interact with electronic products they're still notoriously insufficient to be anywhere near a complete replacement.
+
 
 ## AI-powered voice agents will undermine the smartphone supremacy
 

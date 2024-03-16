@@ -12,8 +12,6 @@ params:
 
       I recently built [Horus](https://tryhorus.com), a full-stack observability system for distributed microservices.
 
-      If you only read one thing,
-
   socialIcons:
     - name: "twitter"
       url: "https://twitter.com/josedlpuente"

@@ -2,7 +2,7 @@
 title: "From strings to bytes"
 date: "2023-12-21"
 description: "How do strings map down to bits and bytes?"
-summary: "Everything in computers comes down to bits and bytes"
+summary: "A recent talk I gave in London on how computers interpret data."
 tags: ["strings", "Go", "computer systems"]
 categories: ["software engineering"]
 series: ["software engineering"]
