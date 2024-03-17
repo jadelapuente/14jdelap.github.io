@@ -48,6 +48,12 @@
     <div class="entry-content">
         <p>I&rsquo;m a software engineer at <a href="https://thoughtmachine.net">Thought Machine&rsquo;s</a> Scheduling team, where I work on a high-throughput event processing pipeline. Before that, I was at <a href="https://snyk.io">Snyk&rsquo;s</a> API infrastructure team.</p>
 <p>I recently built <a href="https://tryhorus.com">Horus</a>, a full-stack observability system for distributed microservices.</p>
+<p>{{ if eq hugo.Environment &ldquo;production&rdquo; }}
+I render when in production
+{{ end }}</p>
+<p>{{ if hugo.IsProduction }}
+I render when in production
+{{ end }}</p>
 
     </div>
     <footer class="entry-footer">
