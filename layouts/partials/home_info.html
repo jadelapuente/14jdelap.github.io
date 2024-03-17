@@ -2,6 +2,13 @@
 <article class="first-entry home-info">
     <div class="entry-content">
         {{ .Content | markdownify }}
+        {{ if eq hugo.Environment "production" }}
+            I render when in production
+        {{ end }}
+
+        {{ if hugo.IsProduction }}
+            I render when in production
+        {{ end }}
     </div>
     <footer class="entry-footer">
         {{ partial "social_icons.html" (dict "align" site.Params.homeInfoParams.AlignSocialIconsTo) }}

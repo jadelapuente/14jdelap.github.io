@@ -12,14 +12,6 @@ params:
 
       I recently built [Horus](https://tryhorus.com), a full-stack observability system for distributed microservices.
 
-      {{ if eq hugo.Environment "production" }}
-        I render when in production
-      {{ end }}
-
-      {{ if hugo.IsProduction }}
-        I render when in production
-      {{ end }}
-
   socialIcons:
     - name: "twitter"
       url: "https://twitter.com/josedlpuente"
