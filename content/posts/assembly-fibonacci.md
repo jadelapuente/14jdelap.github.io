@@ -2,8 +2,8 @@
 title: "Assembly Fibonacci"
 date: "2024-02-19"
 description: "Writing recursion in assembly forces you to understand how to organize your control and data transfers across function calls."
-summary: "Do you really know assembly if you haven't done it in assembly?"
-tags: ["assembly", "fibonacci", "computer systems"]
+summary: "Do you really know assembly if you haven't done recursion?"
+tags: ["assembly", "computer systems"]
 categories: ["software engineering"]
 series: ["software engineering"]
 ShowToc: false
@@ -37,12 +37,12 @@ base_case:
     ret
 ```
 
-After a very painful process I programmed a function to calculate the nth Fibonacci number with assembly. For this solution, I used the Intel syntax on an x86 architecture.
+After a very painful process I programmed a function to calculate the `n`th Fibonacci number with assembly. For this solution, I used the Intel syntax on an x86 architecture.
 
-I found that doing this recursive problem required understanding how to organize your control and data transfers across function calls. This included understanding the stack as a data structure and the rsp and rip registers.
+I found that doing this recursive problem required understanding how to organize your control and data transfers across function calls. This included understanding the stack as a data structure, the stack pointer (`rsp` register), and the program counter (`rip` register).
 
 The key details to getting the solution right included:
 
 - Handling the base case
-- Having both fibonacci calls in the general case to calculate fib(n-1) + fib(n-2)
-- Using the stack to store n and n-1 in the stack frames of each procedure
+- Having both fibonacci calls in the general case to calculate `fib(n-1) + fib(n-2)`
+- Using the stack to store `n` and `n-1` in the stack frames of each procedure
