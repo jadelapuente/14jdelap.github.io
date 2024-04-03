@@ -42,15 +42,13 @@ This is much more expressive, intuitive, and personal than gestures on a smartph
 
 ## Reinventing hardware around voice
 
-The above leads to my main prediction for the next 10 years: voice interfaces powered by AI agents will be the dominant new interface of the next decade, and we'll create a long-tail of hardware around voice. While we're not exactly there, better computation — leading to faster and more accurate LLM results — will enable this.
+The above leads to my main predictions for the next 10 years: i) voice powered by AI agents will be the dominant new interface of the next decade and ii) this will create a long-tail of hardware around voice. While we're not exactly there, better computation — leading to faster and more accurate LLM results — should enable this. Some example of this are the [Rabbit R1](https://www.rabbit.tech/keynote) and the [Humane Pin](https://humane.com/aipin).
 
 While smartphones will continue to exist because of the value of displaying information on screens (just like desktops and laptops coexisted with smartphones), these new devices will complement — or in some cases even substitute — smartphones.
 
-Some example of this are the [Rabbit R1](https://www.rabbit.tech/keynote) and the [Humane Pin](https://humane.com/aipin).
-
 I'm particularly excited about these devices eventually being *substitutes* of smartphones. Our phones are essential but invasive: we can't imagine not having it, but its interruptions and distractions have few limits. Something like a screen-less smartwatch that can still do the essentials like access our calendar, call our Uber, or make a call, can be a full replacement to smartphones for many people — especially those sensitive to smartphone's invasiveness.
 
-To extend this further, I think we'll see the reverse trend from the smartphone: instead of collapsing al ldevices into one, we'll see an explosion of a long-tail of AI-powered devices. With an internet connection to make calls to an LLM, and maybe some additional hardware like cameras to understand the user's environment, you can make devices more helpful. Imagine a mining hat with a camera that helps you understand the geological conditions around you and security cameras that help show the type of recorded footage you're looking for.
+To extend this further, I think we'll see the reverse trend from the smartphone: instead of collapsing all devices into one, we'll see an explosion of a long-tail of AI-powered devices. With an internet connection to make calls to an LLM, and maybe some additional hardware like cameras to understand the user's environment, you can make devices more helpful. Imagine a mining hat with a camera that helps you understand the geological conditions around you and security cameras that help show the type of recorded footage you're looking for.
 
 Just like vertical SaaS helps you deliver more value to customers with more tailored products, "vertical" AI-powered hardware should provide more consumer value for specific use cases than generic alternatives.
 
