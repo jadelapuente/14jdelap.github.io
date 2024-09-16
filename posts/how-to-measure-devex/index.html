@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>How to measure DevEx? | José de la Puente</title>
+<meta name="keywords" content="devex, metrics">
+<meta name="description" content="You need to measure through systems and human perceptions.">
+<meta name="author" content="">
+<link rel="canonical" href="https://josedelapuente.com/posts/how-to-measure-devex/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e2c56aac9bbaf7c79cc1cb783b44bc45534e81a03a2037cc7cfe5eddb45ae32f.css" integrity="sha256-4sVqrJu698ecwct4O0S8RVNOgaA6IDfMfP5e3bRa4y8=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://josedelapuente.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://josedelapuente.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://josedelapuente.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://josedelapuente.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://josedelapuente.com/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://josedelapuente.com/posts/how-to-measure-devex/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><meta property="og:title" content="How to measure DevEx?" />
+<meta property="og:description" content="You need to measure through systems and human perceptions." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://josedelapuente.com/posts/how-to-measure-devex/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-09-16T00:00:00+00:00" />
+<meta property="article:modified_time" content="2024-09-16T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="How to measure DevEx?"/>
+<meta name="twitter:description" content="You need to measure through systems and human perceptions."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://josedelapuente.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "How to measure DevEx?",
+      "item": "https://josedelapuente.com/posts/how-to-measure-devex/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "How to measure DevEx?",
+  "name": "How to measure DevEx?",
+  "description": "You need to measure through systems and human perceptions.",
+  "keywords": [
+    "devex", "metrics"
+  ],
+  "articleBody": " This is a summary of “How to Measure” in DevEx: What Actually Drives Productivity\nUse both perceptual and systemic measurements Perceptual metrics are self-reported and describe how developers feel (see why it’s important above in DevEx is both about tools and perceptions). They measure human attitudes and opinion.\nWorkflows measure systems and processes (e.g. the time it takes to build build targets).\nYou need both to understand the DevEx. For example:\nYou might have quick code reviews that feel disruptive because they’re pushed invasively to developers Developers may feel satisfied with build processes but a measurement of build time may suggest that feedback loops could be quicker Use surveys to measure perceptual data Surveys are hard to design but allow you to collect data quickly and, when designed correctly, give accurate baselines.\nWhen using surveys it’s important to:\nBreak down results by team and persona because DevEx is highly contextual and varies dramatically by team and role E.g. if you focus on aggregate results you may overlook important problems for a subset of devs, like mobile devs Compare results against benchmarks Other teams/peers in the company Sentiment scores in other companies Mix in transactional surveys (what is this?) Try to consult with survey development experts Example metrics This is a generic proposal of metrics most companies could collect to measure DevEx based on the above and Google’s model to measure development productivity (speed, ease, quality).\nSpeed Metric Measurement Type Build time Time in seconds for a target to complete (P50 and P90) for both local and remote execution Workflows Post-commit CI Time taken in minutes for each commit to get through the CI pipeline (P50/P90) Workflows Revisions that fail to land Number of approved revisions that fail to land Workflows Ease Metric Measurement Type Onboarding Business hours to 1st and 10th PR for all new hires (P50/P90) Workflows DevSat score Satisfaction of working as a developer Perceptual Ease of code commit Self-reported ease of committing code Perceptual Ease of code review Self-reported ease of reviewing code Perceptual Perceived productivity Self-reported productivity Peceptual Tool discoverability % of engineers using a tool in the last month Workflows Runbook quality Self-reported perception of the quality of a runbook Perceptual Information discovereability Self-reported perception of the ease to find information a dev needs Perceptual Quality Metric Measurement Type Test determinism % likelihood that a test suite does not flake Workflows Change Failure rate Number of bugs per minor and patch release Workflows Change Failure rate Number of post-merge failures per deployment Workflows Change failure rate Number of P0s per deployment Workflows Time to resolve an incident P50 and P90 of the number of business days taken to close an incident Workflows Size of PRs P50 and P90 of PR size Workflows Freshness of dependencies % of dependencies that are in its latest version Workflows Freshness of dependencies P50 and P90 of the last time that a dependency was upgraded Workflows Freshness of documentation pages % of unarchived documentation pages that have been edited in the last 6 months Workflows Freshness of runbooks % of runbooks that have been edited in 6 months Workflows Testing % of diffs that land with at least some tests Workflows Code health Perceived code health Perceptual ",
+  "wordCount" : "537",
+  "inLanguage": "en",
+  "datePublished": "2024-09-16T00:00:00Z",
+  "dateModified": "2024-09-16T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://josedelapuente.com/posts/how-to-measure-devex/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "José de la Puente",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://josedelapuente.com/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://josedelapuente.com/" accesskey="h" title="José de la Puente (Alt + H)">José de la Puente</a>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      How to measure DevEx?
+    </h1>
+    <div class="post-description">
+      You need to measure through systems and human perceptions.
+    </div>
+    <div class="post-meta"><span title='2024-09-16 00:00:00 +0000 UTC'>September 16, 2024</span>
+
+</div>
+  </header> 
+  <div class="post-content"><blockquote>
+<p>This is a summary of &ldquo;How to Measure&rdquo; in <a href="https://dl.acm.org/doi/pdf/10.1145/3595878">DevEx: What Actually Drives Productivity</a></p>
+</blockquote>
+<h1 id="use-both-perceptual-and-systemic-measurements">Use both perceptual and systemic measurements<a hidden class="anchor" aria-hidden="true" href="#use-both-perceptual-and-systemic-measurements">#</a></h1>
+<p>Perceptual metrics are self-reported and describe how developers feel (see why it&rsquo;s important above in <em>DevEx is both about tools and perceptions</em>). They measure human attitudes and opinion.</p>
+<p>Workflows measure systems and processes (e.g. the time it takes to build build targets).</p>
+<p>You need both to understand the DevEx. For example:</p>
+<ul>
+<li>You might have quick code reviews that <em>feel</em> disruptive because they&rsquo;re pushed invasively to developers</li>
+<li>Developers may feel satisfied with build processes but a measurement of build time may suggest that feedback loops could be quicker</li>
+</ul>
+<p><img loading="lazy" src="/example-metrics.jpg" alt="alt text"  />
+</p>
+<h2 id="use-surveys-to-measure-perceptual-data">Use surveys to measure perceptual data<a hidden class="anchor" aria-hidden="true" href="#use-surveys-to-measure-perceptual-data">#</a></h2>
+<p>Surveys are <strong>hard to design</strong> but allow you to <strong>collect data quickly</strong> and, when designed correctly, give accurate baselines.</p>
+<p>When using surveys it&rsquo;s important to:</p>
+<ul>
+<li>Break down results by team and persona because DevEx is highly contextual and varies dramatically by team and role
+<ul>
+<li>E.g. if you focus on aggregate results you may overlook important problems for a subset of devs, like mobile devs</li>
+</ul>
+</li>
+<li>Compare results against benchmarks
+<ul>
+<li>Other teams/peers in the company</li>
+<li>Sentiment scores in other companies</li>
+</ul>
+</li>
+<li>Mix in transactional surveys (what is this?)</li>
+<li>Try to consult with survey development experts</li>
+</ul>
+<h2 id="example-metrics">Example metrics<a hidden class="anchor" aria-hidden="true" href="#example-metrics">#</a></h2>
+<p>This is a generic proposal of metrics most companies could collect to measure DevEx based on the above and Google&rsquo;s model to measure development productivity (speed, ease, quality).</p>
+<h3 id="speed">Speed<a hidden class="anchor" aria-hidden="true" href="#speed">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Measurement</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Build time</td>
+<td>Time in seconds for a target to complete (P50 and P90) for both local and remote execution</td>
+<td>Workflows</td>
+</tr>
+<tr>
+<td>Post-commit CI</td>
+<td>Time taken in minutes for each commit to get through the CI pipeline (P50/P90)</td>
+<td>Workflows</td>
+</tr>
+<tr>
+<td>Revisions that fail to land</td>
+<td>Number of approved revisions that fail to land</td>
+<td>Workflows</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ease">Ease<a hidden class="anchor" aria-hidden="true" href="#ease">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Measurement</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Onboarding</td>
+<td>Business hours to 1st and 10th PR for all new hires (P50/P90)</td>
+<td>Workflows</td>
+</tr>
+<tr>
+<td>DevSat score</td>
+<td>Satisfaction of working as a developer</td>
+<td>Perceptual</td>
+</tr>
+<tr>
+<td>Ease of code commit</td>
+<td>Self-reported ease of committing code</td>
+<td>Perceptual</td>
+</tr>
+<tr>
+<td>Ease of code review</td>
+<td>Self-reported ease of reviewing code</td>
+<td>Perceptual</td>
+</tr>
+<tr>
+<td>Perceived productivity</td>
+<td>Self-reported productivity</td>
+<td>Peceptual</td>
+</tr>
+<tr>
+<td>Tool discoverability</td>
+<td>% of engineers using a tool in the last month</td>
+<td>Workflows</td>
+</tr>
+<tr>
+<td>Runbook quality</td>
+<td>Self-reported perception of the quality of a runbook</td>
+<td>Perceptual</td>
+</tr>
+<tr>
+<td>Information discovereability</td>
+<td>Self-reported perception of the ease to find information a dev needs</td>
+<td>Perceptual</td>
+</tr>
+</tbody>
+</table>
+<h3 id="quality">Quality<a hidden class="anchor" aria-hidden="true" href="#quality">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Measurement</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Test determinism</td>
+<td>% likelihood that a test suite does not flake</td>
+<td>Workflows</td>
+</tr>
+<tr>
+<td>Change Failure rate</td>
+<td>Number of bugs per minor and patch release</td>
+<td>Workflows</td>
+</tr>
+<tr>
+<td>Change Failure rate</td>
+<td>Number of post-merge failures per deployment</td>
+<td>Workflows</td>
+</tr>
+<tr>
+<td>Change failure rate</td>
+<td>Number of P0s per deployment</td>
+<td>Workflows</td>
+</tr>
+<tr>
+<td>Time to resolve an incident</td>
+<td>P50 and P90 of the number of business days taken to close an incident</td>
+<td>Workflows</td>
+</tr>
+<tr>
+<td>Size of PRs</td>
+<td>P50 and P90 of PR size</td>
+<td>Workflows</td>
+</tr>
+<tr>
+<td>Freshness of dependencies</td>
+<td>% of dependencies that are in its latest version</td>
+<td>Workflows</td>
+</tr>
+<tr>
+<td>Freshness of dependencies</td>
+<td>P50 and P90 of the last time that a dependency was upgraded</td>
+<td>Workflows</td>
+</tr>
+<tr>
+<td>Freshness of documentation pages</td>
+<td>% of unarchived documentation pages that have been edited in the last 6 months</td>
+<td>Workflows</td>
+</tr>
+<tr>
+<td>Freshness of runbooks</td>
+<td>% of runbooks that have been edited in 6 months</td>
+<td>Workflows</td>
+</tr>
+<tr>
+<td>Testing</td>
+<td>% of diffs that land with at least some tests</td>
+<td>Workflows</td>
+</tr>
+<tr>
+<td>Code health</td>
+<td>Perceived code health</td>
+<td>Perceptual</td>
+</tr>
+</tbody>
+</table>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://josedelapuente.com/tags/devex/">Devex</a></li>
+      <li><a href="https://josedelapuente.com/tags/metrics/">Metrics</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+</body>
+
+</html>

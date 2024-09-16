@@ -2,11 +2,32 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://josedelapuente.com/categories/</loc>
+    <lastmod>2024-09-16T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://josedelapuente.com/tags/devex/</loc>
+    <lastmod>2024-09-16T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://josedelapuente.com/posts/how-to-measure-devex/</loc>
+    <lastmod>2024-09-16T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://josedelapuente.com/</loc>
-    <lastmod>2024-04-03T00:00:00+00:00</lastmod>
+    <lastmod>2024-09-16T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://josedelapuente.com/tags/metrics/</loc>
+    <lastmod>2024-09-16T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://josedelapuente.com/posts/</loc>
-    <lastmod>2024-04-03T00:00:00+00:00</lastmod>
+    <lastmod>2024-09-16T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://josedelapuente.com/categories/society/</loc>
+    <lastmod>2024-09-16T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://josedelapuente.com/tags/</loc>
+    <lastmod>2024-09-16T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://josedelapuente.com/categories/technology/</loc>
+    <lastmod>2024-09-16T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://josedelapuente.com/tags/assembly/</loc>
     <lastmod>2024-02-19T00:00:00+00:00</lastmod>
@@ -14,16 +35,10 @@
     <loc>https://josedelapuente.com/posts/assembly-fibonacci/</loc>
     <lastmod>2024-02-19T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://josedelapuente.com/categories/</loc>
-    <lastmod>2024-02-19T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://josedelapuente.com/tags/computer-systems/</loc>
     <lastmod>2024-02-19T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://josedelapuente.com/categories/software-engineering/</loc>
-    <lastmod>2024-02-19T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://josedelapuente.com/tags/</loc>
     <lastmod>2024-02-19T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://josedelapuente.com/tags/ai/</loc>
@@ -33,12 +48,6 @@
     <lastmod>2024-02-03T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://josedelapuente.com/tags/llm/</loc>
-    <lastmod>2024-02-03T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://josedelapuente.com/categories/society/</loc>
-    <lastmod>2024-02-03T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://josedelapuente.com/categories/technology/</loc>
     <lastmod>2024-02-03T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://josedelapuente.com/tags/ui/ux/</loc>
@@ -67,5 +76,8 @@
   </url><url>
     <loc>https://josedelapuente.com/tags/open-source-software/</loc>
     <lastmod>2021-12-19T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://josedelapuente.com/posts/working-with-freelancers/</loc>
+    <lastmod>2020-06-17T00:00:00+00:00</lastmod>
   </url>
 </urlset>
