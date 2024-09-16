@@ -42,7 +42,12 @@ This is much more expressive, intuitive, and personal than gestures on a smartph
 
 ## Reinventing hardware around voice
 
-The above leads to my main predictions for the next 10 years: i) voice powered by AI agents will be the dominant new interface of the next decade and ii) this will create a long-tail of hardware around voice. While we're not exactly there, better computation — leading to faster and more accurate LLM results — should enable this. Some example of this are the [Rabbit R1](https://www.rabbit.tech/keynote) and the [Humane Pin](https://humane.com/aipin).
+The above leads to my main predictions for the next 10 years:
+
+1. Voice powered by AI agents will be the dominant new interface of the next decade
+2. This will create a long-tail of hardware around voice
+
+While we're not exactly there, better computation — leading to faster and more accurate LLM results — should enable this. Some example of this are the [Rabbit R1](https://www.rabbit.tech/keynote) and the [Humane Pin](https://humane.com/aipin).
 
 While smartphones will continue to exist because of the value of displaying information on screens (just like desktops and laptops coexisted with smartphones), these new devices will complement — or in some cases even substitute — smartphones.
 

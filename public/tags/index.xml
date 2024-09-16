@@ -6,8 +6,22 @@
     <description>Recent content in Tags on José de la Puente</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 19 Feb 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 16 Sep 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Devex</title>
+      <link>http://localhost:1313/tags/devex/</link>
+      <pubDate>Mon, 16 Sep 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/devex/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Metrics</title>
+      <link>http://localhost:1313/tags/metrics/</link>
+      <pubDate>Mon, 16 Sep 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/metrics/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Assembly</title>
       <link>http://localhost:1313/tags/assembly/</link>
@@ -20,13 +34,6 @@
       <link>http://localhost:1313/tags/computer-systems/</link>
       <pubDate>Mon, 19 Feb 2024 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/tags/computer-systems/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Fibonacci</title>
-      <link>http://localhost:1313/tags/fibonacci/</link>
-      <pubDate>Mon, 19 Feb 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/fibonacci/</guid>
       <description></description>
     </item>
     <item>

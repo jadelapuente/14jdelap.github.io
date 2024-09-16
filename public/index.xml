@@ -6,8 +6,15 @@
     <description>Recent content on José de la Puente</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 19 Feb 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 16 Sep 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to measure DevEx?</title>
+      <link>http://localhost:1313/posts/how-to-measure-devex/</link>
+      <pubDate>Mon, 16 Sep 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/how-to-measure-devex/</guid>
+      <description>You need to measure through systems and human perceptions.</description>
+    </item>
     <item>
       <title>Assembly Fibonacci</title>
       <link>http://localhost:1313/posts/assembly-fibonacci/</link>
@@ -35,6 +42,13 @@
       <pubDate>Sun, 19 Dec 2021 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/posts/horus/horus/</guid>
       <description>How can we make better open source observability systems?</description>
+    </item>
+    <item>
+      <title>What you should know about working with freelancers</title>
+      <link>http://localhost:1313/posts/working-with-freelancers/</link>
+      <pubDate>Wed, 17 Jun 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/working-with-freelancers/</guid>
+      <description>Tips and tricks from hiring and working with a dozen of freelancers over the web</description>
     </item>
   </channel>
 </rss>

@@ -8,7 +8,7 @@ params:
   hideFooter: true
   homeInfoParams:
     Content: |
-      I'm a software engineer at [Thought Machine's](https://thoughtmachine.net) Scheduling team, where I work on a high-throughput event processing pipeline. Before that, I was at [Snyk's](https://snyk.io) API infrastructure team.
+      I'm a software engineer at [Thought Machine's](https://thoughtmachine.net) DevEx team, where I'm currently focused on working with our Please build system to compile C and Python. I've also worked on distributed systems (Go, gRPC and HTTP APIs, Postgres, Docker, K8s).
 
       I recently built [Horus](https://tryhorus.com), a full-stack observability system for distributed microservices.
 

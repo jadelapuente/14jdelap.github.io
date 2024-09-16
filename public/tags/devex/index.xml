@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Devex on José de la Puente</title>
+    <link>http://localhost:1313/tags/devex/</link>
+    <description>Recent content in Devex on José de la Puente</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 16 Sep 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/devex/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to measure DevEx?</title>
+      <link>http://localhost:1313/posts/how-to-measure-devex/</link>
+      <pubDate>Mon, 16 Sep 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/how-to-measure-devex/</guid>
+      <description>You need to measure through systems and human perceptions.</description>
+    </item>
+  </channel>
+</rss>
