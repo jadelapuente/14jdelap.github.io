@@ -1,5 +1,5 @@
 ---
-title: "What you should know about working with freelancers"
+title: "How to effectively work with freelancers"
 date: "2020-06-17"
 description: "Tips and tricks from hiring and working with a dozen of freelancers over the web"
 summary: "Be specific. Invest in onboarding them. Hold them to a high standard."
