@@ -4,6 +4,7 @@ title: José de la Puente
 theme: "PaperMod"
 params:
   defaultTheme: dark
+  description: "Software engineer specialized in Python internals, compilation and linking, distributed systems, and user experience design. Creator of the Horus observability system."
   disableThemeToggle: true
   hideFooter: true
   homeInfoParams:
