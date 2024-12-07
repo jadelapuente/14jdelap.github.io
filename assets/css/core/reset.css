@@ -70,8 +70,17 @@ ul {
 }
 
 a {
+    text-decoration: underline;
+}
+
+a[title] {
     text-decoration: none;
 }
+
+article[class="first-entry home-info"] {
+    margin-bottom: 60px;
+}
+
 
 body,
 figure,
