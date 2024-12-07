@@ -6,8 +6,15 @@
     <description>Recent content in Categories on José de la Puente</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 16 Sep 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 07 Dec 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://josedelapuente.com/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Python</title>
+      <link>https://josedelapuente.com/categories/python/</link>
+      <pubDate>Sat, 07 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/categories/python/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Society</title>
       <link>https://josedelapuente.com/categories/society/</link>

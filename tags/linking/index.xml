@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Linking on José de la Puente</title>
+    <link>https://josedelapuente.com/tags/linking/</link>
+    <description>Recent content in Linking on José de la Puente</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 07 Dec 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://josedelapuente.com/tags/linking/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>6x&#39;ing performance by fixing a linking error in the Python interpreter</title>
+      <link>https://josedelapuente.com/posts/python-interpreter-performance-symbol-error/</link>
+      <pubDate>Sat, 07 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/posts/python-interpreter-performance-symbol-error/</guid>
+      <description>How I debugged a high-impact, multi-year bug in a Python interpreter</description>
+    </item>
+  </channel>
+</rss>

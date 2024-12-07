@@ -6,8 +6,15 @@
     <description>Recent content on José de la Puente</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 16 Sep 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 07 Dec 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://josedelapuente.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>6x&#39;ing performance by fixing a linking error in the Python interpreter</title>
+      <link>https://josedelapuente.com/posts/python-interpreter-performance-symbol-error/</link>
+      <pubDate>Sat, 07 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/posts/python-interpreter-performance-symbol-error/</guid>
+      <description>How I debugged a high-impact, multi-year bug in a Python interpreter</description>
+    </item>
     <item>
       <title>How to measure DevEx?</title>
       <link>https://josedelapuente.com/posts/how-to-measure-devex/</link>
@@ -44,7 +51,7 @@
       <description>How can we make better open source observability systems?</description>
     </item>
     <item>
-      <title>What you should know about working with freelancers</title>
+      <title>How to effectively work with freelancers</title>
       <link>https://josedelapuente.com/posts/working-with-freelancers/</link>
       <pubDate>Wed, 17 Jun 2020 00:00:00 +0000</pubDate>
       <guid>https://josedelapuente.com/posts/working-with-freelancers/</guid>
