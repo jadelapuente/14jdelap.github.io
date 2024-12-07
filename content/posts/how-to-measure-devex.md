@@ -23,7 +23,7 @@ You need both to understand the DevEx. For example:
 - You might have quick code reviews that *feel* disruptive because they're pushed invasively to developers
 - Developers may feel satisfied with build processes but a measurement of build time may suggest that feedback loops could be quicker
 
-![alt text](/example-metrics.jpg)
+![alt text](/images/example-metrics.jpg)
 
 ## Use surveys to measure perceptual data
 
