@@ -1,0 +1,16 @@
+.first-entry.home-info .entry-content ul {
+  list-style-type: disc;
+  padding-inline-start: 20px;
+  /* Match the theme's padding for lists */
+  margin-bottom: var(--content-gap);
+  /* Match the theme's spacing */
+  color: var(--secondary);
+  /* Match the text color with the theme */
+}
+
+.first-entry.home-info .entry-content ul li {
+  margin-top: 5px;
+  /* Match the theme's list item spacing */
+  line-height: 1.6;
+  /* Match the theme's line height */
+}
