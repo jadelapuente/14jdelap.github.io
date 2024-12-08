@@ -9,10 +9,15 @@ params:
   hideFooter: true
   homeInfoParams:
     Content: |
-      I'm a software engineer at [Thought Machine's](https://thoughtmachine.net) DevEx team, where I'm currently focused on working with our Please build system to compile C and Python. I've also worked on distributed systems (Go, gRPC and HTTP APIs, Postgres, Docker, K8s).
+      I'm a software engineer at [Thought Machine's](https://thoughtmachine.net) Developer Platform unit, where I'm focused on Python tooling, how our monorepo compiles and links, and improving the user experience of our tools. Before my current unit, I worked on extending features in our distributed systems (Go, gRPC and HTTP APIs, Postgres, Docker, K8s).
 
-      I recently built [Horus](https://tryhorus.com), a full-stack observability system for distributed microservices.
+      I also built [Horus](https://tryhorus.com), a full-stack observability system for distributed microservices.
 
+      My current interests include:
+      - [How will technology reshape around voice as an interface?](https://josedelapuente.com/posts/ais-iphone-moment/)
+      - Python and Linux internals
+      - Learning about biology and chemistry
+  env: production
   socialIcons:
     - name: "twitter"
       url: "https://twitter.com/josedlpuente"
