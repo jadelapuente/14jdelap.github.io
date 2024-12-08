@@ -12,7 +12,6 @@ TocOpen: false
 
 {{< youtube YI0LZ8gf220 >}}
 
-
 I gave this talk to the lovely people at London Gophers in November 2023.
 
 Starting from Go strings, my aim was to peel back layers of abstractions to show how strings are reflected as bits.

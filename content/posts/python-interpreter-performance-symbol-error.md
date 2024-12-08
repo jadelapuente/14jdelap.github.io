@@ -6,8 +6,8 @@ summary: "Better LLM models and more efficient microprocessor architectures will
 tags: ["python", "compilation", "linking", "symbols"]
 categories: ["python"]
 # series: ["AI"]
-ShowToc: false
-TocOpen: false
+ShowToc: true
+TocOpen: true
 ---
 
 At my company I led a recent migration of our Python interpreter between C standard libraries. We found that a critical, performance-sensitive journey that heavily used decimals had improved by 6 times (!) after the migration finished between our 2 interpreters. Fixing the old interpreter was still important because it is heavily used by clients using older versions of our software.

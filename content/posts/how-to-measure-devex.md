@@ -6,8 +6,8 @@ summary: "Perceptual and systemic measurements help us understand what's the sta
 tags: ["devex", "metrics"]
 categories: ["technology", "society"]
 series: ["devex"]
-ShowToc: false
-TocOpen: false
+ShowToc: true
+TocOpen: true
 ---
 
 > This is a summary of "How to Measure" in [DevEx: What Actually Drives Productivity](https://dl.acm.org/doi/pdf/10.1145/3595878)
