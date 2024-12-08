@@ -1,6 +1,6 @@
 baseURL: "https://josedelapuente.com/"
 languageCode: en-us
-title: José de la Puente
+title: José de la Puente | Python and Platform engineering
 theme: "PaperMod"
 params:
   defaultTheme: dark
@@ -14,7 +14,8 @@ params:
       I also built [Horus](https://tryhorus.com), a full-stack observability system for distributed microservices.
 
       My current interests include:
-      - [How will technology reshape around voice as an interface?](https://josedelapuente.com/posts/ais-iphone-moment/)
+
+      - How will technology reshape around voice as an interface? [Some hypotheses here](https://josedelapuente.com/posts/ais-iphone-moment/)
       - Python and Linux internals
       - Learning about biology and chemistry
   env: production
@@ -25,5 +26,7 @@ params:
       url: "https://github.com/14jdelap"
     - name: "linkedin"
       url: "https://www.linkedin.com/in/ja-puente/"
+  label:
+    text: "José de la Puente"
   isProduction: true
 pygmentsOptions: "linenos=table"
