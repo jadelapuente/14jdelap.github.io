@@ -23,7 +23,7 @@ You need both to understand the DevEx. For example:
 - You might have quick code reviews that *feel* disruptive because they're pushed invasively to developers
 - Developers may feel satisfied with build processes but a measurement of build time may suggest that feedback loops could be quicker
 
-![alt text](/images/example-metrics.jpg)
+![Table showing DevEx (Developer Experience) metrics organized in three categories: Perceptions (attitudes and opinions), Workflows (system behaviors), and KPIs (key metrics). Metrics are grouped by Feedback Loops, Cognitive Load, and Flow State.](/images/example-metrics.jpg)
 
 ## Use surveys to measure perceptual data
 
