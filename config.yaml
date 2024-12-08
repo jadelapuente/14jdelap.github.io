@@ -21,11 +21,11 @@ params:
   env: production
   socialIcons:
     - name: "twitter"
-      url: "https://twitter.com/josedlpuente"
+      url: "https://twitter.com/jadelapuente"
     - name: "github"
-      url: "https://github.com/14jdelap"
+      url: "https://github.com/jadelapuente"
     - name: "linkedin"
-      url: "https://www.linkedin.com/in/ja-puente/"
+      url: "https://www.linkedin.com/in/jadelapuente/"
   label:
     text: "José de la Puente"
   isProduction: true
