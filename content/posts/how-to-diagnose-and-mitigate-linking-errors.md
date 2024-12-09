@@ -23,6 +23,17 @@ In this post I want to attempt building that context and sharing a methodology f
 
 ## What is `C`?
 
+C is a programming language. As such, C is used in C code like:
+
+```c
+#include <stdio.h>
+int main() {
+  printf("Hello, world!")
+}
+```
+
+Yet like any language it is defined by a specification — in C's case, ISO C. For example, `printf` is defined by ISO C like this:
+
 ## The `C` compilation process
 
 ### Preprocessing
