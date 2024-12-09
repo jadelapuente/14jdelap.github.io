@@ -10,16 +10,22 @@ ShowToc: false
 TocOpen: false
 ---
 
- Open source observability software has a problem: gluing things together is time intensive and confusing.
+Open source observability software has a problem: gluing things together is time intensive and confusing.
 
 Despite the wonderful advance of [OpenTelemetry](https://opentelemetry.io/), which is making telemetry data generation increasingly simple and lowering the switching costs between observability systems, we still need a plug-and-play solution for what to *do* with that data.
 
 That's what I set out to do with some colleagues when we built [Horus](https://tryhorus.com/).
 
+## Easy observability for microservices
+
 Horus is a full-stack observability system. It's made to make observability easy for distributed services by allowing you to:
 
-1. Instrument your data with the `horus-agent` package and few lines of code ([link](https://www.npmjs.com/package/horus-agent))
-2. Spin up `Horus` in Docker to process, store, and visualize your data
-3. Help you investigate by connecting your **metrics to related traces**
+1. Instrument your data with a few lines of code with `horus-agent` ([link](https://www.npmjs.com/package/horus-agent))
+2. Out-of-the-box data processing, storage, and visualization by spinning up the Docker containers in a VPS
+3. Connecting **metrics to related traces** to help you piece together your telemetry data
+
+The crux of the system is the Docker network with the containers.
+
+![Image showing Horus' architecture.](/images/horus-architecture.png)
 
 If this sounds interesting, you might enjoy reasing our [case study](https://tryhorus.com/case-study) which explores the problems, existing solutions, and the trade-offs we made when building Horus.
