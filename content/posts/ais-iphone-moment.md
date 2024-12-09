@@ -44,7 +44,7 @@ This is much more expressive, intuitive, and personal than gestures on a smartph
 
 The above leads to my main predictions for the next 10 years:
 
-1. Voice powered will be the dominant new interface of the next decade
+1. Voice will be the dominant new interface of the next decade
 2. This will create a long-tail of hardware around voice
 
 While we're not exactly there, better computation — leading to faster and more accurate LLM results — should enable this. Some early example of this are the [Rabbit R1](https://www.rabbit.tech/keynote) and the [Humane Pin](https://humane.com/aipin).
