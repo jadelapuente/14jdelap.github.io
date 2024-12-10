@@ -26,6 +26,8 @@ params:
       url: "https://github.com/jadelapuente"
     - name: "linkedin"
       url: "https://www.linkedin.com/in/jadelapuente/"
+    - name: "email"
+      url: "mailto:14jdelap@gmail.com"
   label:
     text: "José de la Puente"
   isProduction: true
