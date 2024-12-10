@@ -31,4 +31,5 @@ params:
   label:
     text: "José de la Puente"
   isProduction: true
+  images: ["/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg"]
 pygmentsOptions: "linenos=table"
