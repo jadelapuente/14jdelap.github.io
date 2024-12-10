@@ -10,27 +10,6 @@ ShowToc: true
 TocOpen: false
 ---
 
-```
-Could you implement these?
-
-Image Alt Text
-
-
-The code blocks could benefit from more descriptive alt text for better accessibility and SEO
-Currently missing image alt text for code snippets
-
-
-Schema Markup
-
-
-While the article has basic schema markup, it could be enhanced with:
-
-Code snippet schema
-Technical article schema
-Tutorial schema
-More detailed article metadata
-```
-
 At my company I led a recent migration of our Python interpreter between C standard libraries. We found that a critical, performance-sensitive journey that heavily used decimals had improved by 6 times (!) after the migration finished between our 2 interpreters. Fixing the old interpreter was still important because it is heavily used by clients using older versions of our software.
 
 The root cause? A multi-year bug in how our compiler dynamically linked at runtime to the `_decimal` C library when the interpreter tried to import `decimal`.
