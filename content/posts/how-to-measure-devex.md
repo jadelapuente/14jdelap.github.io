@@ -7,7 +7,7 @@ tags: ["devex", "metrics"]
 categories: ["technology", "society"]
 series: ["devex"]
 ShowToc: true
-TocOpen: true
+TocOpen: false
 ---
 
 > This is a summary of "How to Measure" in [DevEx: What Actually Drives Productivity](https://dl.acm.org/doi/pdf/10.1145/3595878)
