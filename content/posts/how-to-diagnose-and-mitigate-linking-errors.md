@@ -11,7 +11,7 @@ ShowToc: true
 TocOpen: false
 ---
 
-My case study on [fixing a symbol error in the Python interpreter](/posts/python-interpreter-performance-symbol-error.md) shows how hard but impactful these problems can be: a subtle bug in how we build the C `decimal` library led to a key journey being 6x slower.
+My case study on [fixing a symbol error in the Python interpreter]({{< relref "/posts/python-decimal-module-performance-optimization.md" >}}) shows how hard but impactful these problems can be: a subtle bug in how we build the C `decimal` library led to a key journey being 6x slower.
 
 The fix was just one line in the build file to mitigate the unassuming error `symbol not found` error:
 
