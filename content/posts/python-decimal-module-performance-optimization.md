@@ -1,8 +1,8 @@
 ---
-title: "6x'ing performance by fixing a linking error in the Python interpreter"
+title: "Python performance optimization: 6x speedup by fixing `decimal` module linking error"
 date: "2024-12-07"
-description: "How I debugged a high-impact, multi-year bug in a Python interpreter"
-summary: "Better LLM models and more efficient microprocessor architectures will lead to a new dominant interface: voice."
+description: "Learn how fixing a Python decimal module linking error led to 6x performance improvement: a detailed guide on debugging C extensions and symbol errors in Python interpreters."
+summary: "Learn how fixing a Python decimal module linking error led to 6x performance improvement: a detailed guide on debugging C extensions and symbol errors in Python interpreters."
 tags: ["python", "compilation", "linking", "symbols"]
 categories: ["python", "c", "software engineering"]
 # series: ["AI"]
@@ -10,11 +10,32 @@ ShowToc: true
 TocOpen: false
 ---
 
+```
+Could you implement these?
+
+Image Alt Text
+
+
+The code blocks could benefit from more descriptive alt text for better accessibility and SEO
+Currently missing image alt text for code snippets
+
+
+Schema Markup
+
+
+While the article has basic schema markup, it could be enhanced with:
+
+Code snippet schema
+Technical article schema
+Tutorial schema
+More detailed article metadata
+```
+
 At my company I led a recent migration of our Python interpreter between C standard libraries. We found that a critical, performance-sensitive journey that heavily used decimals had improved by 6 times (!) after the migration finished between our 2 interpreters. Fixing the old interpreter was still important because it is heavily used by clients using older versions of our software.
 
 The root cause? A multi-year bug in how our compiler dynamically linked at runtime to the `_decimal` C library when the interpreter tried to import `decimal`.
 
-> A helpful companion is the more beginner-friendly article [How to diagnose and mitigate linking errors](/content/posts/how-to-diagnose-and-mitigate-linking-errors.md)
+> A helpful companion is the more beginner-friendly article [How to diagnose and mitigate linking errors]({{< relref "/posts/how-to-diagnose-and-mitigate-linking-errors.md" >}})
 
 ## Why are we talking about C if this is Python?
 
@@ -34,7 +55,7 @@ This is because Python heavily uses C extensions in both the interpreter and Pyt
 
 These Python C extensions are a form of a foreign function interface: functions that allow a programming language to make a function call to a function in another language.
 
-## Finding the error
+## Finding the Python symbol linking error
 
 We didn't get an explicit error that something was failing — we only saw the 6x performance difference I mentioned above when comparing two different Python interpreters.
 
@@ -86,7 +107,7 @@ To put the performance of both libraries in context, relative to `_pydecimal` `_
 - 30x faster for I/O heavy operations
 - 80x faster for numerical computations
 
-## How I found the missing symbol
+## How I found the symbol missed by the dynamic linker
 
 ### Sanity checks: comparing the old and new interpreters
 
@@ -106,7 +127,7 @@ $ nm /.../usr/lib/python3.10/lib-dynload/_decimal.cpython-310-x86_64-linux-gnu.s
 
 What is *very* interesting about this comparison is that the old interpreter expects `__udivti3` to be provided by a dynamic library (since it's an unreferenced symbol) whereas the new interpreter already has it statically linked.
 
-### A dead end: inspecting the interpreter's dynamic libraries
+### A dead end: inspecting the binaries of the interpreter's dynamic libraries
 
 Since `__udivti3` is unreferenced the compiler will expect it at runtime. The question is: from where?
 
@@ -135,7 +156,7 @@ nm -D /lib/x86_64-linux-gnu/libc.so.6 | grep _udivti3
 nm -D /lib64/ld-linux-x86-64.so.2 | grep _udivti3
 ```
 
-### Breakthrough: the compiler's runtime library
+### Breakthrough: the compiler's low-level runtime library
 
 There's no way to sugarcoat this part: this involved a lot of Googling and wasn't linear. From a few hours jumping through different references I pieced together 3 things:
 
@@ -150,15 +171,15 @@ $ nm /.../clang/compiler-rt/lib/linux/libclang_rt.builtins-x86_64.a | grep _udiv
 0000000000000000 T __udivti3
 ```
 
-## Mitigating the error in the old interpreter
+## Mitigating the symbol error in the old interpreter
 
 There was significant value in mitigating the problem in the old interpreter. Given the above, it was clear that the root cause was that our build system wasn't able to reference `libclang_rt.builtins-x86_64.a` at build time.
 
 Thus, the fix was adding `deps = ["@//cc/clang:compiler-rt_builtins"]` to our build.
 
-## Why did this issue go undetected?
+## Why did this missing symbol import error go undetected?
 
-### Catched errors in CPython's code
+### CPython catched the import error at runtime
 
 What was happening in our old interpreter is that we were
 
@@ -168,7 +189,7 @@ What was happening in our old interpreter is that we were
 
 Thus, the Python interpreter guaranteed `decimal` functionality by catching the error (see the `try`/`except` above) and loading `_pydecimal`. By catching the error it took years for us to notice what was going on — which led to years of significant performance loss of my company's systems.
 
-### Our C library couldn't error at compile-time because it was expecting `__udivti3` from another library
+### Our C library couldn't error at compile-time because it was expecting `__udivti3` from the compiler at runtime
 
 The build system worked as expected. It built the binary, which expected the symbol to be eventually resolved by a dynamic linker. As such, it couldn't fail at compile time because of this — only at runtime, when CPython catched the error.
 
@@ -203,3 +224,7 @@ A better way to test this is to programmatically import and catch errors. You ca
 1. Python has lots of C extensions that can be easily missed
 2. Missing C extensions in your interpreter or wheels is expensive
 3. You can test missing C files in Python
+
+## Further reading
+
+[How to diagnose and mitigate linking errors]({{< relref "/posts/how-to-diagnose-and-mitigate-linking-errors.md" >}}) is a lighter introduction to compilation and linking.
