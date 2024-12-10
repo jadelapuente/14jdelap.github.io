@@ -1,5 +1,5 @@
 ---
-title: "Python performance optimization: 6x speedup by fixing `decimal` module linking error"
+title: "Python performance optimization: 6x speedup by fixing decimal module linking error"
 date: "2024-12-07"
 description: "Learn how fixing a Python decimal module linking error led to 6x performance improvement: a detailed guide on debugging C extensions and symbol errors in Python interpreters."
 summary: "Learn how fixing a Python decimal module linking error led to 6x performance improvement: a detailed guide on debugging C extensions and symbol errors in Python interpreters."
