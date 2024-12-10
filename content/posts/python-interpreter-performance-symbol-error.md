@@ -4,10 +4,10 @@ date: "2024-12-07"
 description: "How I debugged a high-impact, multi-year bug in a Python interpreter"
 summary: "Better LLM models and more efficient microprocessor architectures will lead to a new dominant interface: voice."
 tags: ["python", "compilation", "linking", "symbols"]
-categories: ["python"]
+categories: ["python", "c", "software engineering"]
 # series: ["AI"]
 ShowToc: true
-TocOpen: true
+TocOpen: false
 ---
 
 At my company I led a recent migration of our Python interpreter between C standard libraries. We found that a critical, performance-sensitive journey that heavily used decimals had improved by 6 times (!) after the migration finished between our 2 interpreters. Fixing the old interpreter was still important because it is heavily used by clients using older versions of our software.

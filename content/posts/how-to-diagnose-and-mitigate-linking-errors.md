@@ -4,11 +4,11 @@ date: "2024-12-09"
 description: "How to think about programs, how they compile, and how to mitigate hard linking errors."
 summary: "How to think about programs, how they compile, and how to mitigate hard linking errors."
 tags: ["compilation", "linking", "symbols"]
-# categories: ["python"]
+categories: ["c", "software engineering"]
 # series: ["AI"]
 draft: false
 ShowToc: true
-TocOpen: true
+TocOpen: false
 ---
 
 My case study on [fixing a symbol error in the Python interpreter](/posts/python-interpreter-performance-symbol-error.md) shows how hard but impactful these problems can be: a subtle bug in how we build the C `decimal` library led to a key journey being 6x slower.

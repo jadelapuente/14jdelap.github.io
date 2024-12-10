@@ -7,7 +7,6 @@ tags: ["ai", "llm", "ui/ux", "interface design"]
 categories: ["technology", "society"]
 series: ["AI"]
 ShowToc: false
-TocOpen: false
 ---
 
 Ben Thompson recently wrote in Stratechery about "The Impending VR Moment" ([link](https://stratechery.com/2024/sora-groq-and-virtual-reality/)).

@@ -3,7 +3,6 @@ title: "Favorites"
 date: "2024-04-03"
 summary: "Things I love"
 ShowToc: false
-TocOpen: false
 draft: true
 ---
 

@@ -5,9 +5,8 @@ description: "Writing recursion in assembly forces you to understand how to orga
 summary: "Do you really know assembly if you haven't done recursion?"
 tags: ["assembly", "computer systems"]
 categories: ["software engineering"]
-series: ["software engineering"]
+series: ["software engineering", "assembly"]
 ShowToc: false
-TocOpen: false
 ---
 
 ```asm

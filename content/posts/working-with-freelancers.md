@@ -8,7 +8,7 @@ categories: ["technology", "society"]
 series: ["devex"]
 toc: true
 ShowToc: true
-TocOpen: true
+TocOpen: false
 ---
 
 I've worked with freelancers for different reasons: to create an e-commerce store for a B2B food delivery company going B2C during the pandemic to hiring them to outsource operations in a VC-backed company.

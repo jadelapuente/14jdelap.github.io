@@ -7,7 +7,6 @@ tags: ["observability", "microservices", "open source software"]
 categories: ["software engineering"]
 series: ["software engineering"]
 ShowToc: false
-TocOpen: false
 ---
 
 Open source observability software has a problem: gluing things together is time intensive and confusing.

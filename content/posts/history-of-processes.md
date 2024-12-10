@@ -6,7 +6,6 @@ tags: ["unix", "linux", "operating systems"]
 categories: ["technology"]
 series: ["AI"]
 ShowToc: false
-TocOpen: false
 draft: true
 ---
 
@@ -17,6 +16,7 @@ Every program is a series of instructions. A process is an *instance* of a progr
 - Linux uses clone to create processes and threads
 
 Sources
+
 - [The history of threads](http://www.serpentine.com/blog/threads-faq/the-history-of-threads/)
 - [Process vs task in Linux](https://blog.purestorage.com/purely-informational/task-vs-process-in-linux/)
 - [Mach Threads and the Unix Kernel](http://shelf2.library.cmu.edu/Tech/18966772.pdf)
