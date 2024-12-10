@@ -14,6 +14,8 @@ At my company I led a recent migration of our Python interpreter between C stand
 
 The root cause? A multi-year bug in how our compiler dynamically linked at runtime to the `_decimal` C library when the interpreter tried to import `decimal`.
 
+> A helpful companion is the more beginner-friendly article [How to diagnose and mitigate linking errors](/content/posts/how-to-diagnose-and-mitigate-linking-errors.md)
+
 ## Why are we talking about C if this is Python?
 
 Just download the source code of the Python wheel `grpcio` and count the number of C files:
