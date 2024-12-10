@@ -113,3 +113,7 @@
 .post-content a:not(:hover) {
   box-shadow: none;
 }
+
+.post-content blockquote p a:not(:hover) {
+  box-shadow: none;
+}
