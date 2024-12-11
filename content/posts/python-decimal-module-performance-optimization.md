@@ -158,7 +158,7 @@ Thus, the fix was adding `deps = ["@//cc/clang:compiler-rt_builtins"]` to our bu
 
 ## Why did this missing symbol import error go undetected?
 
-### CPython catched the import error at runtime
+### CPython caught the import error at runtime
 
 What was happening in our old interpreter is that we were
 
@@ -170,7 +170,7 @@ Thus, the Python interpreter guaranteed `decimal` functionality by catching the 
 
 ### Our C library couldn't error at compile-time because it was expecting `__udivti3` from the compiler at runtime
 
-The build system worked as expected. It built the binary, which expected the symbol to be eventually resolved by a dynamic linker. As such, it couldn't fail at compile time because of this — only at runtime, when CPython catched the error.
+The build system worked as expected. It built the binary, which expected the symbol to be eventually resolved by a dynamic linker. As such, it couldn't fail at compile time because of this — only at runtime, when CPython caught the error.
 
 ## Creating tests for import errors
 
