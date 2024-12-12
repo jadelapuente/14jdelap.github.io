@@ -82,7 +82,9 @@ int main() {
 }
 ```
 
-You're probably thinking I'm using variables in a gross way. You're right! This is on purpose because it'll help us explore the different sections in binary file formats like ELF because object files are only aware of global variables because they're initialized at compile-time, not local variables initialized at runtime (that why you'll never find symbols for local variables in executable or object files).
+You're probably thinking I'm using variables in a gross way. You're right! This is on purpose because it'll help us explore the different sections in binary file formats like ELF.
+
+> Object files are only aware of global variables because they're initialized at compile-time, not local variables initialized at runtime — that's why you'll never find symbols for local variables in executable or object files. Thus, having global variables allows us to see them in a binary's symbol table
 
 ### Preprocessing
 
