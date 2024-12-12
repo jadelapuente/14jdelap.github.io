@@ -21,7 +21,7 @@ deps = ["@//cc/clang:compiler-rt_builtins"]
 
 The limitations of that case study is that it's very specific — it doesn't teach you the key underlying concepts to know how to think about these concepts from first principles. It also doesn't teach you how to think about how you want to compile and link your code, which is an important question if you have a complex system.
 
-In this post I want to attempt building that context and sharing a methodology for how you can approach it. I'll explain the concepts using C  because it's arguably the most influential programming language in ELF file formats, but the general principles can be applied to any.
+In this post I want to attempt building that context and sharing a methodology for how you can approach it. I'll explain the concepts using C  because it's arguably the most influential programming language, but the general principles can be applied to any.
 
 ## What is C?
 
@@ -47,6 +47,12 @@ For example, `system` is a C standard library function and the `POSIX` standard 
 
 Thus, if you look at the `glibc` and `musl` source code you'll find many overlapping function signatures but different implementations.
 
+> UNIX is an operating system started by AT&T in 1969. It created many copy-cat operating systems which made application development difficult because the underlying system calls weren't the same.
+>
+> The most widely used UNIX-like operating systems today are Linux (or GNU/Linux if you insist) and macOS.
+>
+> POSIX, or Portable Operating System Interface, is a set of standard UNIX-based operating system interfaces to make it easier to write applications for UNIX-like systems. The standardization of many operating system function signatures makes applications more portable across POSIX-compliant operating systems.
+
 ## The C compilation process
 
 We'll examine this hello world program through each stage of the compilation process.
@@ -62,7 +68,7 @@ int main() {
 }
 ```
 
-You're probably thinking I'm using variables in a gross way. You're right! This is on purpose because it'll help us explore the different sections in binary file formats like ELF.
+You're probably thinking I'm using variables in a gross way. You're right! This is on purpose because it'll help us explore the different sections in binary file formats like ELF because object files are only aware of global variables because they're initialized at compile-time, not local variables initialized at runtime (that why you'll never find symbols for local variables in executable or object files).
 
 ### Preprocessing
 
@@ -93,8 +99,6 @@ Instead of:
 B8 01 00 00 00    ; mov eax, 1
 83 C0 01          ; add eax, 1
 ```
-
-Since assembly is the symbolic representation of machine instructions we'll skip straight to the assembly stage — which is the same data but represented in binary instead of assembly.
 
 ### Assembling
 
@@ -145,7 +149,7 @@ Broadly speaking, this is what we'll providing in this final linking phase.
 
 Linking is the process of combining multiple object files into an executable that the operating system can load and run. The linker resolves symbol references, performs relocations to establish final memory addresses, and adds necessary runtime metadata like the program entry point and dynamic linking information.
 
-When we finish the compilation process of the program we started with we get the following symbol table. This is a lot, so we'll break it down by pieces.
+When we finish the compilation process of the program we started with we get the following symbol table. This is a lot, so we'll break it down into the most important pieces.
 
 ```symbolstable
 000000000000038c r  abi_tag
@@ -254,7 +258,7 @@ These are important because:
 - `_init` runs before `main` and sets up the runtime environment
 - `_fini` runs after `main` and runs cleanup tasks
 
-#### Dynamic linking
+#### Dynamic linking at runtime
 
 By this point we have an executable with an entrypoint that is expecting the dynamic linker to provide the final symbol references that it needs.
 
@@ -266,7 +270,7 @@ By this point we have an executable with an entrypoint that is expecting the dyn
 ...
 ```
 
-What the dynamic linker does is to try to load the `.so` shared object file from the file system from a series of paths (which you can find by using `ldd` on an executable).
+What the dynamic linker does is to try to load the `.so` shared object file from the file system from a series of paths (which you can find by using `ldd` on an executable). This happens at **runtime** when the executable is loaded into memory, not at compile time.
 
 ## A methodology for linking errors
 
