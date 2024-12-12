@@ -30,11 +30,25 @@ C is a programming language. As such, C is used in C code like:
 ```c
 #include <stdio.h>
 int main() {
-  printf("Hello, world!")
+  printf("Hello, world!");
 }
 ```
 
-Yet like any language it is defined by a specification. In C's case it's ISO C, which also defines the standard libraries. For example, `printf` is defined by ISO C in English like this:
+Which can be compiled with a C compiler like `gcc` into an executable and run by a computer.
+
+> An exacutable is a type of binary file that can be loaded and executed by a machine. Some of the common characteristics of executable files are:
+>
+> - A defined entrypoint, which is what the machine starts executing when the program starts
+> - No unresolved symbols (this will be explained later)
+> - Metadata for how to execute the program
+
+```bash
+$ gcc main.c # outputs the executable 'a.out'
+$ ./a.out
+Hello, world!
+```
+
+Yet like any language, C is defined by a specification. In C's case it's ISO C, which also defines the standard libraries. For example, `printf` is defined by ISO C in English like this:
 
 ![Image from an ISO C draft defining printf as a series of paragraphs in English rather than code.](/images/printf-iso-c.jpg)
 
