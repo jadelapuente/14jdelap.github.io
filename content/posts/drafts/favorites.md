@@ -8,25 +8,25 @@ draft: true
 
 This is a list of things that I like and recommend across different topics.
 
-# Computing
+## Computing
 
-## How to learn programming
+### How to learn programming
 
 I enthusiastically recommend [Launch School](http://www.launchschool.com), without which I probably would've never become a software engineer.
 
-## Linking
+### Linking
 
 I learn linking while working on a C migration at Thought Machine: migrating from `musl` to `glibc` means changing what C standard library your binary is linked to.
 
-Here's what I recommend you approach linking:
+I hope that a good starting point is this article I wrote about [learning how to fix linking errors]({{< relref "/posts/python-decimal-module-performance-optimization.md" >}}).
 
+I learnt a lot through:
+
+- [Computer Systems: An Application Programmer's Perspective](https://www.goodreads.com/book/show/18724533) and [Computer Organization and Design](https://www.amazon.com/Computer-Organization-Design-RISC-V-Architecture/dp/0128203315/) are both great at building up the necessary context and introducing linking
 - [Beginner's Guide to Linkers](https://www.lurklurk.org/linkers/linkers.html)
 - Ian Lance Taylor's [20 part blog post on linkers](https://lwn.net/Articles/276782/)
-- If the above was difficult to understand, read *Computer Systems: An Application Programmer's Perspective* as it's great at building up the necessary context and introducing linking in chapter 7
 
-<<INSERT MY ARTICLE ON LINKING HERE>>
-
-# My favorite books
+## My favorite books
 
 My favorite book is any of the biographies written by Robert Caro. He describes the books as about power at a subnational (Robert Moses) and national (Lyndon Johnson) level. While that's true I also think the books are more than that: almost a keyhole into what makes us human.
 
@@ -37,7 +37,7 @@ While I can't choose a favorite book of the 5 (here's hoping he publishes the la
 - The chapter on the contradictory Dick Russell in *Master of the Senate*
 - The assassination of Kennedy and LBJ's masterful transition of power in *The Passage of Power*
 
-# Movies
+## Movies
 
 My favorite movie is [The Umbrellas of Cherbourg](https://www.youtube.com/watch?v=U5KAmPDg8qA). I'm convinved that people who watch it and don't feel anything don't have a heart.
 
@@ -49,7 +49,7 @@ I also like a lot, in no particular order:
 - [Red River](https://www.youtube.com/watch?v=pLak5PwUzH8&ab_channel=CRITERION)
 - [Orpheus](https://www.youtube.com/watch?v=9ciOWebRF3Y)
 
-# Music
+## Music
 
 I've loved music for most of my life. I've listened to some genres more than others at different points of my life (I almost don't recognize my 13 year old hard rock version of myself!) — but classical has been what's been most constant throughout.
 
