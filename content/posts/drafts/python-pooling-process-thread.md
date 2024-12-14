@@ -1,8 +1,8 @@
 ---
-title: "What's the compiler's low-level runtime library?"
+title: "How does process and thread pooling work in Python?"
 date: "2024-12-07"
-description: "Learn how fixing a Python decimal module linking error led to 6x performance improvement: a detailed guide on debugging C extensions and symbol errors in Python interpreters."
-summary: "Learn how fixing a Python decimal module linking error led to 6x performance improvement: a detailed guide on debugging C extensions and symbol errors in Python interpreters."
+description: "Learn how Python implements pre-forking and pre-threading via the `multiprocess` and `threading` modules."
+summary: "Learn how Python implements pre-forking and pre-threading via the `multiprocess` and `threading` modules."
 tags: ["python", "compilation", "linking", "symbols"]
 categories: ["python", "c", "software engineering"]
 # series: ["AI"]
@@ -11,6 +11,7 @@ TocOpen: false
 draft: true
 ---
 
+Anything to cover on mutexes and semaphores?
 
 <https://linuxgazette.net/129/saha.html>
 
