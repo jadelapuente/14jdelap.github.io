@@ -1,6 +1,6 @@
 ---
 title: "How to diagnose and mitigate linking errors"
-date: "2024-12-09"
+date: "2024-12-07"
 description: "How to think about programs, how they compile, and how to mitigate hard linking errors."
 summary: "How to think about programs, how they compile, and how to mitigate hard linking errors."
 tags: ["compilation", "linking", "symbols"]
@@ -11,6 +11,12 @@ ShowToc: true
 TocOpen: false
 ---
 
+> This is the first article in an introductory series about compilation, linking, and runtime libraries. I strongly suggest you start here unless you're comfortable with these concepts.
+>
+> The [second article]({{< relref "posts/python-decimal-module-performance-optimization/">}}) shows a real-world case study where a missing compiler runtime symbol caused a 6x performance regression in a key journey heavily reliant on Python's `decimal` module.
+>
+> The [final article]({{< relref "/posts/whats-the-compiler-low-level-runtime-library/">}}) explore what are compiler low-level runtime libraries and when they're used by referring to the missing symbol in the case study: `__udivti3`.
+
 My case study on [fixing a symbol error in the Python interpreter]({{< relref "/posts/python-decimal-module-performance-optimization.md" >}}) shows how hard but impactful these problems can be: a subtle bug in how we build the C `decimal` library led to a key journey being 6x slower.
 
 The fix was just one line in the build file to mitigate the unassuming error `symbol not found` error:
@@ -18,8 +24,6 @@ The fix was just one line in the build file to mitigate the unassuming error `sy
 ```plz
 deps = ["@//cc/clang:compiler-rt_builtins"]
 ```
-
-The limitations of that case study is that it's very specific — it doesn't teach you the key underlying concepts to know how to think about these concepts from first principles. It also doesn't teach you how to think about how you want to compile and link your code, which is an important question if you have a complex system.
 
 In this post I want to attempt building that context and sharing a methodology for how you can approach it. I'll explain the concepts using C  because it's arguably the most influential programming language, but the general principles can be applied to any.
 

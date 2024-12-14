@@ -1,6 +1,6 @@
 ---
 title: "Python performance: 6x speedup by fixing a decimal module linking error"
-date: "2024-12-07"
+date: "2024-12-10"
 description: "Learn how fixing a Python decimal module linking error led to 6x performance improvement: a detailed guide on debugging C extensions and symbol errors in Python interpreters."
 summary: "Learn how fixing a Python decimal module linking error led to 6x performance improvement: a detailed guide on debugging C extensions and symbol errors in Python interpreters."
 tags: ["python", "compilation", "linking", "symbols"]
@@ -9,6 +9,12 @@ categories: ["python", "c", "software engineering"]
 ShowToc: true
 TocOpen: false
 ---
+
+> This is the second article in an introductory series about compilation, linking, and runtime libraries.
+>
+> The [first article]({{< relref "/posts/how-to-diagnose-and-mitigate-linking-errors/" >}}) explored how programs are compiled and linked, and how you can use that to solve symbol errors. It's the best starting point if you have little context.
+>
+> The [final article]({{< relref "/posts/whats-the-compiler-low-level-runtime-library/">}}) explore what are compiler low-level runtime libraries and when they're used. This last article is best read after this one, which introduces the concept via `__udivti3`.
 
 At my company I led a recent migration of our Python interpreter between C standard libraries. We found that a critical, performance-sensitive journey that heavily used decimals had improved by 6 times (!) after the migration finished between our 2 interpreters. Fixing the old interpreter was still important because it is heavily used by clients using older versions of our software.
 
