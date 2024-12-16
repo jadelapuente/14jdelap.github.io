@@ -319,7 +319,7 @@ For the purposes of time I won't get into details, but you should look at using 
 
 Tools like `ldd` and `nm` help a ton. I *really* would not like to solve a linking problem without them!
 
-However, as I showed in [my linking case study on the Python interpreter](content/posts/python-interpreter-performance-symbol-error) there are some problems where you just *need the knowledge and context*: `ldd` won't point you to a low-level compiler runtime library or the C runtime. Hopefully, this article is a primer on how to think about these problems and, more broadly, how to think about what programs are and how they compile.
+However, as I showed in [my linking case study on the Python interpreter](/posts/python-decimal-module-performance-optimization/) there are some problems where you just *need the knowledge and context*: `ldd` won't point you to a low-level compiler runtime library or the C runtime. Hopefully, this article is a primer on how to think about these problems and, more broadly, how to think about what programs are and how they compile.
 
 ## Further reading
 
