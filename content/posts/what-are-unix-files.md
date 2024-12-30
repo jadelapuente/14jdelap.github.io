@@ -7,7 +7,6 @@ tags: ["unix"]
 categories: ["software engineering"]
 ShowToc: true
 TocOpen: false
-draft: true
 ---
 
 This is meant to be a brief primer on regular files, which are easy to overlook in their simplicity. This isn't meant to be exhaustive, and there's a lot I won't talk about (inodes!, file descriptors!, POSIX permissioning!).
@@ -18,11 +17,11 @@ Regular files are one of the 7 [standard Unix file types](https://en.wikipedia.o
 |---------------|-----------------------------------------------|----------------------------------------------|
 | Regular       | Persistent data storage                       | `.txt`, `.jpg`, `.mp3`        |
 | Directory     | Structuring the file system     | `/home`, `/etc`, `/usr`                            |
-| Block         | Provide buffered access to hardware devices  | Hard drives (`/dev/sda`), SSDs                 |
-| Character     | Provide unbuffered access to hardware devices| Terminals (`/dev/tty`), printers               |
-| Pipe          | Uni-directional inter-process communication  | Named pipes created with `mkfifo`              |
-| Socket        | Bi-directional inter-process communication   | Unix domain sockets, network sockets         |
-| Symbolic link | Pointing to another file or directory          | Shortcut files created with `ln -s`            |
+| Block         | Buffered access to hardware devices  | Hard drives (`/dev/sda`)                 |
+| Character     | Unbuffered access to hardware devices| Terminals (`/dev/tty`)               |
+| Pipe          | Uni-directional inter-process communication  | Pipes created with `mkfifo`              |
+| Socket        | Bi-directional inter-process communication   | Network sockets         |
+| Symbolic link | Pointing to another file or directory          | Files created with `ln -s`            |
 
 As the table hints at, they serve a crucial purpose: permanent data storage in file systems. As such, I'll try to convey 3 key characteristics of regular files:
 
