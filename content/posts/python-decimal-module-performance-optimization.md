@@ -1,11 +1,10 @@
 ---
 title: "Python performance: 6x speedup by fixing a decimal module linking error"
 date: "2024-12-10"
-description: "Learn how fixing a Python decimal module linking error led to 6x performance improvement: a detailed guide on debugging C extensions and symbol errors in Python interpreters."
-summary: "Learn how fixing a Python decimal module linking error led to 6x performance improvement: a detailed guide on debugging C extensions and symbol errors in Python interpreters."
+description: "A case study on debugging a symbol error in the Python interpreters."
+summary: "A case study on debugging a symbol error in the Python interpreters."
 tags: ["python", "compilation", "linking", "symbols"]
 categories: ["python", "c", "software engineering"]
-# series: ["AI"]
 ShowToc: true
 TocOpen: false
 ---
@@ -31,7 +30,9 @@ Just download the source code of the Python wheel `grpcio` and count the number 
 $ find -name "*.c" | wc -l 839
 ```
 
-Almost 840 C files! I almost feel catfished, I thought this was a Python — not a C — wheel.
+Almost 840 C files! I almost feel catfished. Wasn't this Python — why this C code?
+
+> As a side note, while Python the language specification isn't tied to a specific language the standard Python interpreter implementation — what most people refer to as "Python" — is a program called CPython. There's other interpreter implementations with different trade-offs, like Jython (a Python implementation in Java) and Pypy (a Python implementation in Python).
 
 This is because Python heavily uses C extensions in both the interpreter and Python wheels for 2 reasons:
 
