@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Book Reviews on José de la Puente | Python and Platform engineering</title>
+    <link>https://josedelapuente.com/categories/book-reviews/</link>
+    <description>Recent content in Book Reviews on José de la Puente | Python and Platform engineering</description>
+    <image>
+      <title>José de la Puente | Python and Platform engineering</title>
+      <url>https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg</url>
+      <link>https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg</link>
+    </image>
+    <generator>Hugo -- 0.146.5</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 26 Mar 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://josedelapuente.com/categories/book-reviews/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Book review: Top praise for &#39;Flowers for Algernon&#39;</title>
+      <link>https://josedelapuente.com/posts/flowers-for-algernon/</link>
+      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/posts/flowers-for-algernon/</guid>
+      <description>A moving book that reminded me of the value of reading fiction.</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Python performance: 6x speedup by fixing a decimal module linking error | José de la Puente | Python and Platform engineering</title>
+<meta name="keywords" content="python, compilation, linking, symbols">
+<meta name="description" content="A case study on debugging a symbol error in the Python interpreters.">
+<meta name="author" content="">
+<link rel="canonical" href="https://josedelapuente.com/posts/python-decimal-module-performance-optimization/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.07bf49839e92734c439e460bc8db0e3fafc1e6322f5523cee1f520bdad544c62.css" integrity="sha256-B79Jg56Sc0xDnkYLyNsOP6/B5jIvVSPO4fUgva1UTGI=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://josedelapuente.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://josedelapuente.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://josedelapuente.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://josedelapuente.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://josedelapuente.com/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://josedelapuente.com/posts/python-decimal-module-performance-optimization/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><meta property="og:url" content="https://josedelapuente.com/posts/python-decimal-module-performance-optimization/">
+  <meta property="og:site_name" content="José de la Puente | Python and Platform engineering">
+  <meta property="og:title" content="Python performance: 6x speedup by fixing a decimal module linking error">
+  <meta property="og:description" content="A case study on debugging a symbol error in the Python interpreters.">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-12-10T00:00:00+00:00">
+    <meta property="article:modified_time" content="2024-12-10T00:00:00+00:00">
+    <meta property="article:tag" content="Python">
+    <meta property="article:tag" content="Compilation">
+    <meta property="article:tag" content="Linking">
+    <meta property="article:tag" content="Symbols">
+      <meta property="og:image" content="https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg">
+<meta name="twitter:title" content="Python performance: 6x speedup by fixing a decimal module linking error">
+<meta name="twitter:description" content="A case study on debugging a symbol error in the Python interpreters.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://josedelapuente.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Python performance: 6x speedup by fixing a decimal module linking error",
+      "item": "https://josedelapuente.com/posts/python-decimal-module-performance-optimization/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Python performance: 6x speedup by fixing a decimal module linking error",
+  "name": "Python performance: 6x speedup by fixing a decimal module linking error",
+  "description": "A case study on debugging a symbol error in the Python interpreters.",
+  "keywords": [
+    "python", "compilation", "linking", "symbols"
+  ],
+  "articleBody": " This is the second article in an introductory series about compilation, linking, and runtime libraries.\nThe first article explored how programs are compiled and linked, and how you can use that to solve symbol errors. It’s the best starting point if you have little context.\nThe final article explore what are compiler low-level runtime libraries and when they’re used. This last article is best read after this one, which introduces the concept via __udivti3.\nAt my company I led a recent migration of our Python interpreter between C standard libraries. We found that a critical, performance-sensitive journey that heavily used decimals had improved by 6 times (!) after the migration finished between our 2 interpreters. Fixing the old interpreter was still important because it is heavily used by clients using older versions of our software.\nThe root cause? A multi-year bug in how our compiler dynamically linked at runtime to the _decimal C library when the interpreter tried to import decimal.\nA helpful companion is the more beginner-friendly article How to diagnose and mitigate linking errors\nWhy are we talking about C if this is Python? Just download the source code of the Python wheel grpcio and count the number of C files:\n1 2 # Executed from /grpcio-1.66.0 $ find -name \"*.c\" | wc -l 839 Almost 840 C files! I almost feel catfished. Wasn’t this Python — why this C code?\nAs a side note, while Python the language specification isn’t tied to a specific language the standard Python interpreter implementation — what most people refer to as “Python” — is a program called CPython. There’s other interpreter implementations with different trade-offs, like Jython (a Python implementation in Java) and Pypy (a Python implementation in Python).\nThis is because Python heavily uses C extensions in both the interpreter and Python wheels for 2 reasons:\nPerformance Access to system calls provided by C but not Python These Python C extensions are a form of a foreign function interface: functions that allow a programming language to make a function call to a function in another language.\nFinding the Python symbol linking error We didn’t get an explicit error that something was failing — we only saw the 6x performance difference I mentioned above when comparing two different Python interpreters.\nI confirmed the issue by running strace on the old interpreter as it imported decimal — which revealed the missing symbol __udivti3:\n1 2 3 $ strace -e trace=open,openat /.../usr/bin/python3.10 -c \"import _decimal\" 2\u003e\u00261 | grep decimal open(\"/.../usr/lib/python3.10/lib-dynload/_decimal.cpython-310-x86_64-linux-musl.so\", O_RDONLY|O_CLOEXEC) = 3 ImportError: Error relocating /.../usr/lib/python3.10/lib-dynload/_decimal.cpython-310-x86_64-linux-musl.so: __udivti3: symbol not found Another way of surfacing the error is by directly importing the _decimal in the interpreter, which bypasses the error handling from import decimal:\n1 2 3 4 \u003e\u003e\u003e import _decimal Traceback (most recent las call): File \"\", line 1, lin \u003cmodule\u003e ImportError: Error relocating /.../_decimal.cpython-310-x86_64-linux-musl.so: __udivti3: symbol not found Understanding how Python’s decimal module is imported Python’s native module decimal is a wrapper around 2 functionally-identical backends:\n_decimal: a C implementation (which itself is a wrapper around mpdecimal) _pydecimal: a pure-Python implementation of the same decimal library When you run import decimal, Python first tries to load _decimal and if it fails falls back on _pydecimal.\n1 2 3 4 5 6 7 8 9 10 # cpython/Lib/decimal.py try: from _decimal import * from _decimal import __version__ # noqa: F401 from _decimal import __libmpdec_version__ # noqa: F401 except ImportError: import _pydecimal import sys _pydecimal.__doc__ = __doc__ sys.modules[__name__] = _pydecimal See the above code on CPython’s GitHub (link).\nThus, this error hadn’t been seen before because when we imported decimal it silently failed and didn’t notify us of this problem.\nTo put the performance of both libraries in context, relative to _pydecimal _decimal is:\n30x faster for I/O heavy operations 80x faster for numerical computations How I found the symbol missed by the dynamic linker Sanity checks: comparing the old and new interpreters My investigation began with a sanity check that we needed the __udivti3 symbol. Since the error prints the affected file name it’s trivial to do this by inspecting the binary file’s symbol table with nm:\n$ nm /.../usr/lib/python3.10/lib-dynload/_decimal.cpython-310-x86_64-linux-musl.so | grep _udivti3 U __udivti3 Since the new interpreter has a very different build, my second sanity check was to confirm that it too needed this __udivti3. This would allow me to discard some hypothesis for how to mitigate the error, such as if this was due to how we compiled the interpreter.\n$ nm /.../usr/lib/python3.10/lib-dynload/_decimal.cpython-310-x86_64-linux-gnu.so | grep _udivti3 0000000000045950 t __udivti3 What is very interesting about this comparison is that the old interpreter expects __udivti3 to be provided by a dynamic library (since it’s an unreferenced symbol) whereas the new interpreter already has it statically linked.\nA dead end: inspecting the binaries of the interpreter’s dynamic libraries Since __udivti3 is unreferenced the compiler will expect it at runtime. The question is: from where?\nAn effective way to find the dynamic libraries expected by a binary is to use ldd (“list dynamic dependencies”).\n1 2 3 4 5 6 7 8 $ ldd /.../usr/lib/python3.10/lib-dynload/_decimal.cpython-310-x86_64-linux-musl.so linux-vdso.so.1 (0x00007ffec49fe000) libpython3.10.so =\u003e /lib/x86_64-linux-gnu/libpython3.10.so (0x00007f334600000) libc.so =\u003e /opt/tm/tools/musl/1.1.18-2/usr/lib/libc.so (0x00007f334000000) libexpat.so.1 =\u003e /lib/x86_64-linux-gnu/libexpat.so.1 (0x00007f3345cf000) libz.so.1 =\u003e /lib/x86_64-linux-gnu/libz.so.1 (0x00007f3345b3000) libm.so.6 =\u003e /lib/x86_64-linux-gnu/libm.so.6 (0x00007f3344cc000) libc.so.6 =\u003e /lib/x86_64-linux-gnu/libc.so.6 (0x00007f333c00000) /lib/ld-musl-x86_64.so.1 =\u003e /lib64/ld-linux-x86-64.so.2 (0x00007f3344c52000) However, none of these file’s symbol tables contained __udivti3:\n1 2 3 4 5 6 7 nm -D /lib/x86_64-linux-gnu/libpython3.10.so | grep _udivti3 nm -D /opt/tm/tools/musl/1.1.18-2/usr/lib/libc.so | grep _udivti3 nm -D /lib/x86_64-linux-gnu/libexpat.so.1 | grep _udivti3 nm -D /lib/x86_64-linux-gnu/libz.so.1 | grep _udivti3 nm -D /lib/x86_64-linux-gnu/libm.so.6 | grep _udivti3 nm -D /lib/x86_64-linux-gnu/libc.so.6 | grep _udivti3 nm -D /lib64/ld-linux-x86-64.so.2 | grep _udivti3 Breakthrough: the compiler’s low-level runtime library There’s no way to sugarcoat this part: this involved a lot of Googling and wasn’t linear. From a few hours jumping through different references I pieced together 3 things:\n__udivti3 is a compiler-provided function that enables 128-bit division on machines that don’t natively support it The x86-64 instruction set lacks a native instruction for 128-bit division Compilers provide low-level types for situations like these Based on the above, I found the symbol in one of my compiler’s objects:\n1 2 $ nm /.../clang/compiler-rt/lib/linux/libclang_rt.builtins-x86_64.a | grep _udivti3 0000000000000000 T __udivti3 Mitigating the symbol error in the old interpreter There was significant value in mitigating the problem in the old interpreter. Given the above, it was clear that the root cause was that our build system wasn’t able to reference libclang_rt.builtins-x86_64.a at build time.\nThus, the fix was adding deps = [\"@//cc/clang:compiler-rt_builtins\"] to our build.\nWhy did this missing symbol import error go undetected? CPython caught the import error at runtime What was happening in our old interpreter is that we were\nImporting decimal, which first tried to import _decimal _decimal failed due to an ImportError The error was caught and instead Python imported _pydecimal Thus, the Python interpreter guaranteed decimal functionality by catching the error (see the try/except above) and loading _pydecimal. By catching the error it took years for us to notice what was going on — which led to years of significant performance loss of my company’s systems.\nOur C library couldn’t error at compile-time because it was expecting __udivti3 from the compiler at runtime The build system worked as expected. It built the binary, which expected the symbol to be eventually resolved by a dynamic linker. As such, it couldn’t fail at compile time because of this — only at runtime, when CPython caught the error.\nCreating tests for import errors There’s two ways you can approach this.\nThe first is to create unit tests that try to import specific libraries that you know have C extensions.\n1 2 3 4 5 6 7 8 9 # First import your test case import unittest class DecimalImportTest(unittest.TestCase): def test_can_import_decimal(self): try: import _decimal except: return self.fail(\"Could not import _decimal module\") The limitations of this approach are that:\nIt requires awareness of whether a library is implemented as a C extension or in Python You need to write a test for every library Given the first 2, it creates more room for omissions or errors A better way to test this is to programmatically import and catch errors. You can also extend this approach to test all 3rd party Python dependencies are being loaded correctly.\nTakeaways Python has lots of C extensions that can be easily missed Missing C extensions in your interpreter or wheels is expensive You can test missing C files in Python Further reading How to diagnose and mitigate linking errors is a lighter introduction to compilation and linking.\n",
+  "wordCount" : "1417",
+  "inLanguage": "en",
+  "image": "https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg","datePublished": "2024-12-10T00:00:00Z",
+  "dateModified": "2024-12-10T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://josedelapuente.com/posts/python-decimal-module-performance-optimization/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "José de la Puente | Python and Platform engineering",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://josedelapuente.com/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://josedelapuente.com/" accesskey="h" title="José de la Puente (Alt + H)">José de la Puente</a>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Python performance: 6x speedup by fixing a decimal module linking error
+    </h1>
+    <div class="post-description">
+      A case study on debugging a symbol error in the Python interpreters.
+    </div>
+    <div class="post-meta"><span title='2024-12-10 00:00:00 +0000 UTC'>December 10, 2024</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#why-are-we-talking-about-c-if-this-is-python" aria-label="Why are we talking about C if this is Python?">Why are we talking about C if this is Python?</a></li>
+                <li>
+                    <a href="#finding-the-python-symbol-linking-error" aria-label="Finding the Python symbol linking error">Finding the Python symbol linking error</a></li>
+                <li>
+                    <a href="#understanding-how-pythons-decimal-module-is-imported" aria-label="Understanding how Python&rsquo;s decimal module is imported">Understanding how Python&rsquo;s decimal module is imported</a></li>
+                <li>
+                    <a href="#how-i-found-the-symbol-missed-by-the-dynamic-linker" aria-label="How I found the symbol missed by the dynamic linker">How I found the symbol missed by the dynamic linker</a><ul>
+                        
+                <li>
+                    <a href="#sanity-checks-comparing-the-old-and-new-interpreters" aria-label="Sanity checks: comparing the old and new interpreters">Sanity checks: comparing the old and new interpreters</a></li>
+                <li>
+                    <a href="#a-dead-end-inspecting-the-binaries-of-the-interpreters-dynamic-libraries" aria-label="A dead end: inspecting the binaries of the interpreter&rsquo;s dynamic libraries">A dead end: inspecting the binaries of the interpreter&rsquo;s dynamic libraries</a></li>
+                <li>
+                    <a href="#breakthrough-the-compilers-low-level-runtime-library" aria-label="Breakthrough: the compiler&rsquo;s low-level runtime library">Breakthrough: the compiler&rsquo;s low-level runtime library</a></li></ul>
+                </li>
+                <li>
+                    <a href="#mitigating-the-symbol-error-in-the-old-interpreter" aria-label="Mitigating the symbol error in the old interpreter">Mitigating the symbol error in the old interpreter</a></li>
+                <li>
+                    <a href="#why-did-this-missing-symbol-import-error-go-undetected" aria-label="Why did this missing symbol import error go undetected?">Why did this missing symbol import error go undetected?</a><ul>
+                        
+                <li>
+                    <a href="#cpython-caught-the-import-error-at-runtime" aria-label="CPython caught the import error at runtime">CPython caught the import error at runtime</a></li>
+                <li>
+                    <a href="#our-c-library-couldnt-error-at-compile-time-because-it-was-expecting-__udivti3-from-the-compiler-at-runtime" aria-label="Our C library couldn&rsquo;t error at compile-time because it was expecting __udivti3 from the compiler at runtime">Our C library couldn&rsquo;t error at compile-time because it was expecting __udivti3 from the compiler at runtime</a></li></ul>
+                </li>
+                <li>
+                    <a href="#creating-tests-for-import-errors" aria-label="Creating tests for import errors">Creating tests for import errors</a></li>
+                <li>
+                    <a href="#takeaways" aria-label="Takeaways">Takeaways</a></li>
+                <li>
+                    <a href="#further-reading" aria-label="Further reading">Further reading</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><blockquote>
+<p>This is the second article in an introductory series about compilation, linking, and runtime libraries.</p>
+<p>The <a href="/posts/how-to-diagnose-and-mitigate-linking-errors/">first article</a> explored how programs are compiled and linked, and how you can use that to solve symbol errors. It&rsquo;s the best starting point if you have little context.</p>
+<p>The <a href="/posts/whats-the-compiler-low-level-runtime-library/">final article</a> explore what are compiler low-level runtime libraries and when they&rsquo;re used. This last article is best read after this one, which introduces the concept via <code>__udivti3</code>.</p></blockquote>
+<p>At my company I led a recent migration of our Python interpreter between C standard libraries. We found that a critical, performance-sensitive journey that heavily used decimals had improved by 6 times (!) after the migration finished between our 2 interpreters. Fixing the old interpreter was still important because it is heavily used by clients using older versions of our software.</p>
+<p>The root cause? A multi-year bug in how our compiler dynamically linked at runtime to the <code>_decimal</code> C library when the interpreter tried to import <code>decimal</code>.</p>
+<blockquote>
+<p>A helpful companion is the more beginner-friendly article <a href="/posts/how-to-diagnose-and-mitigate-linking-errors/">How to diagnose and mitigate linking errors</a></p></blockquote>
+<h2 id="why-are-we-talking-about-c-if-this-is-python">Why are we talking about C if this is Python?<a hidden class="anchor" aria-hidden="true" href="#why-are-we-talking-about-c-if-this-is-python">#</a></h2>
+<p>Just download the source code of the Python wheel <code>grpcio</code> and count the number of C files:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Executed from /grpcio-1.66.0</span>
+</span></span><span style="display:flex;"><span>$ find -name <span style="color:#e6db74">&#34;*.c&#34;</span> | wc -l <span style="color:#ae81ff">839</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Almost 840 C files! I almost feel catfished. Wasn&rsquo;t this Python — why this C code?</p>
+<blockquote>
+<p>As a side note, while Python the language specification isn&rsquo;t tied to a specific language the standard Python interpreter implementation — what most people refer to as &ldquo;Python&rdquo; — is a program called CPython. There&rsquo;s other interpreter implementations with different trade-offs, like Jython (a Python implementation in Java) and Pypy (a Python implementation in Python).</p></blockquote>
+<p>This is because Python heavily uses C extensions in both the interpreter and Python wheels for 2 reasons:</p>
+<ol>
+<li>Performance</li>
+<li>Access to system calls provided by C but not Python</li>
+</ol>
+<p>These Python C extensions are a form of a foreign function interface: functions that allow a programming language to make a function call to a function in another language.</p>
+<h2 id="finding-the-python-symbol-linking-error">Finding the Python symbol linking error<a hidden class="anchor" aria-hidden="true" href="#finding-the-python-symbol-linking-error">#</a></h2>
+<p>We didn&rsquo;t get an explicit error that something was failing — we only saw the 6x performance difference I mentioned above when comparing two different Python interpreters.</p>
+<p>I confirmed the issue by running <code>strace</code> on the old interpreter as it imported <code>decimal</code> — which revealed the missing symbol <code>__udivti3</code>:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ strace -e trace<span style="color:#f92672">=</span>open,openat /.../usr/bin/python3.10 -c <span style="color:#e6db74">&#34;import _decimal&#34;</span> 2&gt;&amp;<span style="color:#ae81ff">1</span> | grep decimal
+</span></span><span style="display:flex;"><span>open<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/.../usr/lib/python3.10/lib-dynload/_decimal.cpython-310-x86_64-linux-musl.so&#34;</span>, O_RDONLY|O_CLOEXEC<span style="color:#f92672">)</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>ImportError: Error relocating /.../usr/lib/python3.10/lib-dynload/_decimal.cpython-310-x86_64-linux-musl.so: __udivti3: symbol not found
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Another way of surfacing the error is by directly importing the <code>_decimal</code> in the interpreter, which bypasses the error handling from <code>import decimal</code>:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#f92672">import</span> _decimal
+</span></span><span style="display:flex;"><span>Traceback (most recent las call):
+</span></span><span style="display:flex;"><span>  File <span style="color:#e6db74">&#34;&lt;stdin&gt;&#34;</span>, line <span style="color:#ae81ff">1</span>, lin <span style="color:#f92672">&lt;</span>module<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ImportError</span>: Error relocating <span style="color:#f92672">/.../</span>_decimal<span style="color:#f92672">.</span>cpython<span style="color:#f92672">-</span><span style="color:#ae81ff">310</span><span style="color:#f92672">-</span>x86_64<span style="color:#f92672">-</span>linux<span style="color:#f92672">-</span>musl<span style="color:#f92672">.</span>so: __udivti3: symbol <span style="color:#f92672">not</span> found
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="understanding-how-pythons-decimal-module-is-imported">Understanding how Python&rsquo;s <code>decimal</code> module is imported<a hidden class="anchor" aria-hidden="true" href="#understanding-how-pythons-decimal-module-is-imported">#</a></h2>
+<p>Python&rsquo;s native module <code>decimal</code> is a wrapper around 2 functionally-identical backends:</p>
+<ul>
+<li><code>_decimal</code>: a C implementation (which itself is a wrapper around <a href="https://www.bytereef.org/mpdecimal/"><code>mpdecimal</code></a>)</li>
+<li><code>_pydecimal</code>: a pure-Python implementation of the same decimal library</li>
+</ul>
+<p>When you run <code>import decimal</code>, Python first tries to load <code>_decimal</code> and if it fails falls back on <code>_pydecimal</code>.</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># cpython/Lib/decimal.py</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">from</span> _decimal <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">from</span> _decimal <span style="color:#f92672">import</span> __version__  <span style="color:#75715e"># noqa: F401</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">from</span> _decimal <span style="color:#f92672">import</span> __libmpdec_version__  <span style="color:#75715e"># noqa: F401</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">except</span> <span style="color:#a6e22e">ImportError</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">import</span> _pydecimal
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">import</span> sys
+</span></span><span style="display:flex;"><span>    _pydecimal<span style="color:#f92672">.</span>__doc__ <span style="color:#f92672">=</span> __doc__
+</span></span><span style="display:flex;"><span>    sys<span style="color:#f92672">.</span>modules[__name__] <span style="color:#f92672">=</span> _pydecimal
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>See the above code on CPython&rsquo;s GitHub (<a href="https://github.com/python/cpython/blob/main/Lib/decimal.py">link</a>).</p>
+<p>Thus, this error hadn&rsquo;t been seen before because when we imported <code>decimal</code> it silently failed and didn&rsquo;t notify us of this problem.</p>
+<p>To put the performance of both libraries in context, relative to <code>_pydecimal</code> <code>_decimal</code> is:</p>
+<ul>
+<li>30x faster for I/O heavy operations</li>
+<li>80x faster for numerical computations</li>
+</ul>
+<h2 id="how-i-found-the-symbol-missed-by-the-dynamic-linker">How I found the symbol missed by the dynamic linker<a hidden class="anchor" aria-hidden="true" href="#how-i-found-the-symbol-missed-by-the-dynamic-linker">#</a></h2>
+<h3 id="sanity-checks-comparing-the-old-and-new-interpreters">Sanity checks: comparing the old and new interpreters<a hidden class="anchor" aria-hidden="true" href="#sanity-checks-comparing-the-old-and-new-interpreters">#</a></h3>
+<p>My investigation began with a sanity check that we needed the <code>__udivti3</code> symbol. Since the error prints the affected file name it&rsquo;s trivial to do this by inspecting the binary file&rsquo;s symbol table with <code>nm</code>:</p>
+<pre tabindex="0"><code>$ nm /.../usr/lib/python3.10/lib-dynload/_decimal.cpython-310-x86_64-linux-musl.so | grep _udivti3
+        U __udivti3
+</code></pre><p>Since the new interpreter has a very different build, my second sanity check was to confirm that it too needed this <code>__udivti3</code>. This would allow me to discard some hypothesis for how to mitigate the error, such as if this was due to how we compiled the interpreter.</p>
+<pre tabindex="0"><code>$ nm /.../usr/lib/python3.10/lib-dynload/_decimal.cpython-310-x86_64-linux-gnu.so | grep _udivti3
+0000000000045950 t __udivti3
+</code></pre><p>What is <em>very</em> interesting about this comparison is that the old interpreter expects <code>__udivti3</code> to be provided by a dynamic library (since it&rsquo;s an unreferenced symbol) whereas the new interpreter already has it statically linked.</p>
+<h3 id="a-dead-end-inspecting-the-binaries-of-the-interpreters-dynamic-libraries">A dead end: inspecting the binaries of the interpreter&rsquo;s dynamic libraries<a hidden class="anchor" aria-hidden="true" href="#a-dead-end-inspecting-the-binaries-of-the-interpreters-dynamic-libraries">#</a></h3>
+<p>Since <code>__udivti3</code> is unreferenced the compiler will expect it at runtime. The question is: from where?</p>
+<p>An effective way to find the dynamic libraries expected by a binary is to use <code>ldd</code> (&ldquo;list dynamic dependencies&rdquo;).</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ldd /.../usr/lib/python3.10/lib-dynload/_decimal.cpython-310-x86_64-linux-musl.so
+</span></span><span style="display:flex;"><span>linux-vdso.so.1 <span style="color:#f92672">(</span>0x00007ffec49fe000<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>libpython3.10.so <span style="color:#f92672">=</span>&gt; /lib/x86_64-linux-gnu/libpython3.10.so <span style="color:#f92672">(</span>0x00007f334600000<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>libc.so <span style="color:#f92672">=</span>&gt; /opt/tm/tools/musl/1.1.18-2/usr/lib/libc.so <span style="color:#f92672">(</span>0x00007f334000000<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>libexpat.so.1 <span style="color:#f92672">=</span>&gt; /lib/x86_64-linux-gnu/libexpat.so.1 <span style="color:#f92672">(</span>0x00007f3345cf000<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>libz.so.1 <span style="color:#f92672">=</span>&gt; /lib/x86_64-linux-gnu/libz.so.1 <span style="color:#f92672">(</span>0x00007f3345b3000<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>libm.so.6 <span style="color:#f92672">=</span>&gt; /lib/x86_64-linux-gnu/libm.so.6 <span style="color:#f92672">(</span>0x00007f3344cc000<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>libc.so.6 <span style="color:#f92672">=</span>&gt; /lib/x86_64-linux-gnu/libc.so.6 <span style="color:#f92672">(</span>0x00007f333c00000<span style="color:#f92672">)</span> /lib/ld-musl-x86_64.so.1 <span style="color:#f92672">=</span>&gt; /lib64/ld-linux-x86-64.so.2 <span style="color:#f92672">(</span>0x00007f3344c52000<span style="color:#f92672">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>However, none of these file&rsquo;s symbol tables contained <code>__udivti3</code>:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>nm -D /lib/x86_64-linux-gnu/libpython3.10.so | grep _udivti3
+</span></span><span style="display:flex;"><span>nm -D /opt/tm/tools/musl/1.1.18-2/usr/lib/libc.so | grep _udivti3
+</span></span><span style="display:flex;"><span>nm -D /lib/x86_64-linux-gnu/libexpat.so.1 | grep _udivti3
+</span></span><span style="display:flex;"><span>nm -D /lib/x86_64-linux-gnu/libz.so.1 | grep _udivti3
+</span></span><span style="display:flex;"><span>nm -D /lib/x86_64-linux-gnu/libm.so.6 | grep _udivti3
+</span></span><span style="display:flex;"><span>nm -D /lib/x86_64-linux-gnu/libc.so.6 | grep _udivti3
+</span></span><span style="display:flex;"><span>nm -D /lib64/ld-linux-x86-64.so.2 | grep _udivti3
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="breakthrough-the-compilers-low-level-runtime-library">Breakthrough: the compiler&rsquo;s low-level runtime library<a hidden class="anchor" aria-hidden="true" href="#breakthrough-the-compilers-low-level-runtime-library">#</a></h3>
+<p>There&rsquo;s no way to sugarcoat this part: this involved a lot of Googling and wasn&rsquo;t linear. From a few hours jumping through different references I pieced together 3 things:</p>
+<ol>
+<li><code>__udivti3</code> is a compiler-provided function that enables 128-bit division on machines that don&rsquo;t natively support it</li>
+<li>The <code>x86-64</code> instruction set lacks a native instruction for 128-bit division</li>
+<li>Compilers provide low-level types for situations like these</li>
+</ol>
+<p>Based on the above, I found the symbol in one of my compiler&rsquo;s objects:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ nm /.../clang/compiler-rt/lib/linux/libclang_rt.builtins-x86_64.a | grep _udivti3
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0000000000000000</span> T __udivti3
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="mitigating-the-symbol-error-in-the-old-interpreter">Mitigating the symbol error in the old interpreter<a hidden class="anchor" aria-hidden="true" href="#mitigating-the-symbol-error-in-the-old-interpreter">#</a></h2>
+<p>There was significant value in mitigating the problem in the old interpreter. Given the above, it was clear that the root cause was that our build system wasn&rsquo;t able to reference <code>libclang_rt.builtins-x86_64.a</code> at build time.</p>
+<p>Thus, the fix was adding <code>deps = [&quot;@//cc/clang:compiler-rt_builtins&quot;]</code> to our build.</p>
+<h2 id="why-did-this-missing-symbol-import-error-go-undetected">Why did this missing symbol import error go undetected?<a hidden class="anchor" aria-hidden="true" href="#why-did-this-missing-symbol-import-error-go-undetected">#</a></h2>
+<h3 id="cpython-caught-the-import-error-at-runtime">CPython caught the import error at runtime<a hidden class="anchor" aria-hidden="true" href="#cpython-caught-the-import-error-at-runtime">#</a></h3>
+<p>What was happening in our old interpreter is that we were</p>
+<ul>
+<li>Importing <code>decimal</code>, which first tried to import <code>_decimal</code></li>
+<li><code>_decimal</code> failed due to an <code>ImportError</code></li>
+<li>The error was caught and instead Python imported <code>_pydecimal</code></li>
+</ul>
+<p>Thus, the Python interpreter guaranteed <code>decimal</code> functionality by catching the error (see the <code>try</code>/<code>except</code> above) and loading <code>_pydecimal</code>. By catching the error it took years for us to notice what was going on — which led to years of significant performance loss of my company&rsquo;s systems.</p>
+<h3 id="our-c-library-couldnt-error-at-compile-time-because-it-was-expecting-__udivti3-from-the-compiler-at-runtime">Our C library couldn&rsquo;t error at compile-time because it was expecting <code>__udivti3</code> from the compiler at runtime<a hidden class="anchor" aria-hidden="true" href="#our-c-library-couldnt-error-at-compile-time-because-it-was-expecting-__udivti3-from-the-compiler-at-runtime">#</a></h3>
+<p>The build system worked as expected. It built the binary, which expected the symbol to be eventually resolved by a dynamic linker. As such, it couldn&rsquo;t fail at compile time because of this — only at runtime, when CPython caught the error.</p>
+<h2 id="creating-tests-for-import-errors">Creating tests for import errors<a hidden class="anchor" aria-hidden="true" href="#creating-tests-for-import-errors">#</a></h2>
+<p>There&rsquo;s two ways you can approach this.</p>
+<p>The first is to create unit tests that try to import specific libraries that you know have C extensions.</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># First import your test case</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> unittest
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DecimalImportTest</span>(unittest<span style="color:#f92672">.</span>TestCase):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test_can_import_decimal</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">import</span> _decimal
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">except</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>fail(<span style="color:#e6db74">&#34;Could not import _decimal module&#34;</span>)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The limitations of this approach are that:</p>
+<ol>
+<li>It requires awareness of whether a library is implemented as a C extension or in Python</li>
+<li>You need to write a test for every library</li>
+<li>Given the first 2, it creates more room for omissions or errors</li>
+</ol>
+<p>A better way to test this is to programmatically import and catch errors. You can also extend this approach to test all 3rd party Python dependencies are being loaded correctly.</p>
+<h2 id="takeaways">Takeaways<a hidden class="anchor" aria-hidden="true" href="#takeaways">#</a></h2>
+<ol>
+<li>Python has lots of C extensions that can be easily missed</li>
+<li>Missing C extensions in your interpreter or wheels is expensive</li>
+<li>You can test missing C files in Python</li>
+</ol>
+<h2 id="further-reading">Further reading<a hidden class="anchor" aria-hidden="true" href="#further-reading">#</a></h2>
+<p><a href="/posts/how-to-diagnose-and-mitigate-linking-errors/">How to diagnose and mitigate linking errors</a> is a lighter introduction to compilation and linking.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://josedelapuente.com/tags/python/">Python</a></li>
+      <li><a href="https://josedelapuente.com/tags/compilation/">Compilation</a></li>
+      <li><a href="https://josedelapuente.com/tags/linking/">Linking</a></li>
+      <li><a href="https://josedelapuente.com/tags/symbols/">Symbols</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+</body>
+
+</html>

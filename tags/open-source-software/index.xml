@@ -4,15 +4,20 @@
     <title>Open Source Software on José de la Puente | Python and Platform engineering</title>
     <link>https://josedelapuente.com/tags/open-source-software/</link>
     <description>Recent content in Open Source Software on José de la Puente | Python and Platform engineering</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <image>
+      <title>José de la Puente | Python and Platform engineering</title>
+      <url>https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg</url>
+      <link>https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg</link>
+    </image>
+    <generator>Hugo -- 0.146.5</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 19 Dec 2021 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://josedelapuente.com/tags/open-source-software/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Horus: a new observability system for distributed microservices</title>
-      <link>https://josedelapuente.com/posts/horus/horus/</link>
+      <link>https://josedelapuente.com/posts/horus/</link>
       <pubDate>Sun, 19 Dec 2021 00:00:00 +0000</pubDate>
-      <guid>https://josedelapuente.com/posts/horus/horus/</guid>
+      <guid>https://josedelapuente.com/posts/horus/</guid>
       <description>How can we make better open source observability systems?</description>
     </item>
   </channel>

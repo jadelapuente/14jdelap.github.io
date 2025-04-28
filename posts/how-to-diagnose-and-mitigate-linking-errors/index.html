@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>How to diagnose and mitigate linking errors | José de la Puente | Python and Platform engineering</title>
+<meta name="keywords" content="compilation, linking, symbols">
+<meta name="description" content="How to think about programs, how they compile, and how to mitigate hard linking errors.">
+<meta name="author" content="">
+<link rel="canonical" href="https://josedelapuente.com/posts/how-to-diagnose-and-mitigate-linking-errors/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.07bf49839e92734c439e460bc8db0e3fafc1e6322f5523cee1f520bdad544c62.css" integrity="sha256-B79Jg56Sc0xDnkYLyNsOP6/B5jIvVSPO4fUgva1UTGI=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://josedelapuente.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://josedelapuente.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://josedelapuente.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://josedelapuente.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://josedelapuente.com/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://josedelapuente.com/posts/how-to-diagnose-and-mitigate-linking-errors/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><meta property="og:url" content="https://josedelapuente.com/posts/how-to-diagnose-and-mitigate-linking-errors/">
+  <meta property="og:site_name" content="José de la Puente | Python and Platform engineering">
+  <meta property="og:title" content="How to diagnose and mitigate linking errors">
+  <meta property="og:description" content="How to think about programs, how they compile, and how to mitigate hard linking errors.">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-12-07T00:00:00+00:00">
+    <meta property="article:modified_time" content="2024-12-07T00:00:00+00:00">
+    <meta property="article:tag" content="Compilation">
+    <meta property="article:tag" content="Linking">
+    <meta property="article:tag" content="Symbols">
+      <meta property="og:image" content="https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg">
+<meta name="twitter:title" content="How to diagnose and mitigate linking errors">
+<meta name="twitter:description" content="How to think about programs, how they compile, and how to mitigate hard linking errors.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://josedelapuente.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "How to diagnose and mitigate linking errors",
+      "item": "https://josedelapuente.com/posts/how-to-diagnose-and-mitigate-linking-errors/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "How to diagnose and mitigate linking errors",
+  "name": "How to diagnose and mitigate linking errors",
+  "description": "How to think about programs, how they compile, and how to mitigate hard linking errors.",
+  "keywords": [
+    "compilation", "linking", "symbols"
+  ],
+  "articleBody": " This is the first article in an introductory series about compilation, linking, and runtime libraries. I strongly suggest you start here unless you’re comfortable with these concepts.\nThe second article shows a real-world case study where a missing compiler runtime symbol caused a 6x performance regression in a key journey heavily reliant on Python’s decimal module.\nThe final article explore what are compiler low-level runtime libraries and when they’re used by referring to the missing symbol in the case study: __udivti3.\nMy case study on fixing a symbol error in the Python interpreter shows how hard but impactful these problems can be: a subtle bug in how we build the C decimal library led to a key journey being 6x slower.\nThe fix was just one line in the build file to mitigate the unassuming error symbol not found error:\ndeps = [\"@//cc/clang:compiler-rt_builtins\"] In this post I want to attempt building that context and sharing a methodology for how you can approach it. I’ll explain the concepts using C because it’s arguably the most influential programming language, but the general principles can be applied to any.\nWhat is C? C is a programming language. As such, C is used in C code like:\n1 2 3 4 #include int main() { printf(\"Hello, world!\"); } Which can be compiled with a C compiler like gcc into an executable and run by a computer.\nAn exacutable is a type of binary file that can be loaded and executed by a machine. Some of the common characteristics of executable files are:\nA defined entrypoint, which is what the machine starts executing when the program starts No unresolved symbols (this will be explained later) Metadata for how to execute the program 1 2 3 $ gcc main.c # outputs the executable 'a.out' $ ./a.out Hello, world! Yet like any language, C is defined by a specification. In C’s case it’s ISO C, which also defines the standard libraries. For example, printf is defined by ISO C in English like this:\nThe standard library implementations — such as stdio — are separate from the language itself. The two most common implementations are:\nglibc, which emphasizes feature-richness and GNU compatibility musl, which emphasizes POSIX correctness and simplicity For example, system is a C standard library function and the POSIX standard doesn’t require system to be thread-safe. glibc implements system with thread-safety as a nice-to-have, while musl doesn’t to be strict to the standard.\nThus, if you look at the glibc and musl source code you’ll find many overlapping function signatures but different implementations.\nUNIX is an operating system started by AT\u0026T in 1969. It created many copy-cat operating systems which made application development difficult because the underlying system calls weren’t the same.\nThe most widely used UNIX-like operating systems today are Linux (or GNU/Linux if you insist) and macOS.\nPOSIX, or Portable Operating System Interface, is a set of standard UNIX-based operating system interfaces to make it easier to write applications for UNIX-like systems. The standardization of many operating system function signatures makes applications more portable across POSIX-compliant operating systems.\nThe C compilation process We’ll examine this hello world program through each stage of the compilation process.\n1 2 3 4 5 6 7 8 #include int age; char guest[] = \"Bob\"; char host[] = \"Fred\"; int main() { printf(\"Hello, %s! My name is %s.\", guest, host); } You’re probably thinking I’m using variables in a gross way. You’re right! This is on purpose because it’ll help us explore the different sections in binary file formats like ELF.\nObject files are only aware of global variables because they’re initialized at compile-time, not local variables initialized at runtime — that’s why you’ll never find symbols for local variables in executable or object files. Thus, having global variables allows us to see them in a binary’s symbol table\nPreprocessing The first stage is preprocessing. The preprocessor takes a .c as an input, extends its source code, and output and intermediary .i file type that’s extended C code.\nThis file’s very different because if you look at it you’ll notice many function signatures of C standard library functions.\nOur source code is only at the very end, like we wrote it.\nCompilation The assembly stage takes the .i C file and outputs an assembly .s file. If you haven’t looked at assembly before, it’s a symbolic representation of machine instructions.\nFor example, 1 + 1 might look like:\n1 2 mov eax, 1 ; Put first 1 into eax register add eax, 1 ; Add second 1 to eax Instead of:\nB8 01 00 00 00 ; mov eax, 1 83 C0 01 ; add eax, 1 Assembling The assembly stage takes the .s assembly file and outputs a .o object file. The difference is that you can use utilities to examine binary files and their symbols, which is very useful to understand how code maps to binary and how a machine executes it.\nThink of symbols as name-value associations for functions and variables. The name is the function or variable’s name, and the value is the memory location of the function’s code or the variable’s value.\nFor example, the above program has a symbol table of only 5 symbols:\n0000000000000000 B age 0000000000000000 D guest 0000000000000004 D host 0000000000000000 T main U printf The functions and variables from the C standard library in the .i file aren’t in the symbol table because those extern references just declare “this has been defined elsewhere”.\nThus, the symbol itself is found in the binary where they’re defined — hence why this object file only has 5 symbols and not more.\nEach column in the table represents a different type of value\nThe memory location of the symbol’s value on a per section basis The section of the binary file the symbol’s in (e.g. .data, .text, etc) The name of the symbol This is where the weird variable setup comes in play to show different section in a binary file:\nB (or .bss) has uninitialized read-write data, and age was defined without a value D (.data) has initialized read-write data, i.e. initialized variables like guest and host T (.text) has executable-only data, i.e. code like main U has undefined symbols like printf (because it’s defined in a different object file) Symbols are organized into different sections in a binary file. These change slightly according to the binary format, which is operating system-specific. For example, Linux’s is ELF and MacOS’ is Mach-O.\nAs you might’ve noticed above, the byte value for a symbol’s location is section-dependent in object files. Thus, the first symbol in a section will always be in byte 0.\nLinking So far we’ve gone from a file in C that prints values to stdout to an object file. However, there’s many reasons we can’t just run it:\nWe have an unreferenced symbol in printf We don’t have an entrypoint that the operating system Loader can use to start the program The memory addresses in our object file are relative: we still need to relocate symbols to their actual memory locations where the code and data will reside at runtime Broadly speaking, this is what we’ll providing in this final linking phase.\nLinking is the process of combining multiple object files into an executable that the operating system can load and run. The linker resolves symbol references, performs relocations to establish final memory addresses, and adds necessary runtime metadata like the program entry point and dynamic linking information.\nWhen we finish the compilation process of the program we started with we get the following symbol table. This is a lot, so we’ll break it down into the most important pieces.\n000000000000038c r abi_tag 0000000000004020 B age 0000000000004019 B _bss_start 000000000000401c b completed.0 w _cxa_finalize@GLIBC_2.2.5 0000000000004000 D _data_start 0000000000004000 W data_start 0000000000001090 t deregister_tm_clones 0000000000001100 t _do_global_dtors_aux 00000000000003dc0 d _do_global_dtors_aux_fini_array_entry 0000000000004008 D _dso_handle 00000000000003dc8 d _DYNAMIC 0000000000004019 D _edata 0000000000004028 B _end 0000000000001180 T _fini 0000000000001140 t frame_dummy 00000000000003db8 d _frame_dummy_init_array_entry 0000000000002100 r _FRAME_END_ 00000000000003fb8 d _GLOBAL_OFFSET_TABLE_ w _gmon_start 0000000000002020 r _GNU_EH_FRAME_HDR 0000000000004010 D guest 0000000000004014 D host 0000000000001000 T _init 0000000000002000 R _IO_stdin_used w _ITM_deregisterTMCloneTable w _ITM_registerTMCloneTable U _libc_start_main@GLIBC_2.34 0000000000001149 T main U printf@GLIBC_2.2.5 00000000000010c0 t register_tm_clones 0000000000001060 T _start 0000000000004020 D _TMC_END_ Symbol relocation The first thing to note is that our 5 symbols are still referenced.\n... 0000000000004020 B age ... 0000000000004010 D guest 0000000000004014 D host ... 0000000000001149 T main U printf@GLIBC_2.2.5 ... However, the byte values are different because the symbols have been relocated to their final memory addresses. This is important because the program needs absolute addresses to reference its code and data at runtime. Without relocation, instructions wouldn’t know where to find their operands in memory or which addresses to jump to when calling functions.\nAs part of the symbol resolution and relocation, the linker also adds symbols to mark the boundaries of the sections as shown below.\n0000000000004019 B _bss_start ... 0000000000004000 D _data_start ... 0000000000004019 D _edata ... Dynamic linking infrastructure Since this binary is dynamically linked, The linker also adds symbols so that we can dynamically link printf (which is still unresovled) at runtime.\n... w _cxa_finalize@GLIBC_2.2.5 ... 0000000000004008 D _dso_handle ... 00000000000003dc8 d _DYNAMIC ... 00000000000003fb8 d _GLOBAL_OFFSET_TABLE_ ... U _libc_start_main@GLIBC_2.34 ... U printf@GLIBC_2.2.5 We’ll gloss over this and come back to dynamic linking later.\nRuntime metadata Based on what we’ve seen so far we still need something to help the operating system and runtime environment manage the program’s execution. They come from the C runtime object files (i.e. crt0.o, crti.o, and crtn.o).\nSome of these come from the C runtime object files, which manage the entry point to the program (_start) and the program’s initialization (_init) and finalization (_fini).\n1 2 3 4 5 6 ... 0000000000001180 T _fini ... 0000000000001000 T _init ... 0000000000001060 T _start These are important because:\n_start is the first thing executed in the program _init runs before main and sets up the runtime environment _fini runs after main and runs cleanup tasks Dynamic linking at runtime By this point we have an executable with an entrypoint that is expecting the dynamic linker to provide the final symbol references that it needs.\n... U _libc_start_main@GLIBC_2.34 ... U printf@GLIBC_2.2.5 ... What the dynamic linker does is to try to load the .so shared object file from the file system from a series of paths (which you can find by using ldd on an executable). This happens at runtime when the executable is loaded into memory, not at compile time.\nA methodology for linking errors Is it even a linking error? As I hope you’ve gotten from going through how compilation works, programs are collections of symbols. The symbols include the source code of the programs plus functions and variables needed to manage the program’s runtime and link it.\nThus, you’ll have linking problems when your executable either\nCan’t be built because of a missing symbol Builds but has a runtime error because of a missing symbol If it’s a linking error you’ll see errors such as (but not limited to) undefined reference, symbol not found, or multiple definition of.\nFind the guilty symbols If it is a linking error, it’s probably related to a missing or redundant symbol. This means you’ll need to find the guilty symbol and either link the missing .so at runtime or remove the duplicate symbol.\nFor the purposes of time I won’t get into details, but you should look at using these tools or the equivalent for your operating system:\nList dynamic dependencies to list the shared objects being linked to your binary (ldd) Symbol inspection to verify if the shared object has the symbol you’re looking for (nm and objdump if you need more functionality) Check the paths referenced by the dynamic linker (see an excellent guide here) Closing remarks Tools like ldd and nm help a ton. I really would not like to solve a linking problem without them!\nHowever, as I showed in my linking case study on the Python interpreter there are some problems where you just need the knowledge and context: ldd won’t point you to a low-level compiler runtime library or the C runtime. Hopefully, this article is a primer on how to think about these problems and, more broadly, how to think about what programs are and how they compile.\nFurther reading If you want to continue learning about compilation and linking, I highly recommend:\nComputer Systems: An Application Programmer’s Perspective is great at building up the necessary context and introduces linking in chapter 7 Beginner’s Guide to Linkers Ian Lance Taylor’s 20 part blog post on linkers ",
+  "wordCount" : "2106",
+  "inLanguage": "en",
+  "image": "https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg","datePublished": "2024-12-07T00:00:00Z",
+  "dateModified": "2024-12-07T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://josedelapuente.com/posts/how-to-diagnose-and-mitigate-linking-errors/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "José de la Puente | Python and Platform engineering",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://josedelapuente.com/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://josedelapuente.com/" accesskey="h" title="José de la Puente (Alt + H)">José de la Puente</a>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      How to diagnose and mitigate linking errors
+    </h1>
+    <div class="post-description">
+      How to think about programs, how they compile, and how to mitigate hard linking errors.
+    </div>
+    <div class="post-meta"><span title='2024-12-07 00:00:00 +0000 UTC'>December 7, 2024</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#what-is-c" aria-label="What is C?">What is C?</a></li>
+                <li>
+                    <a href="#the-c-compilation-process" aria-label="The C compilation process">The C compilation process</a><ul>
+                        
+                <li>
+                    <a href="#preprocessing" aria-label="Preprocessing">Preprocessing</a></li>
+                <li>
+                    <a href="#compilation" aria-label="Compilation">Compilation</a></li>
+                <li>
+                    <a href="#assembling" aria-label="Assembling">Assembling</a></li>
+                <li>
+                    <a href="#linking" aria-label="Linking">Linking</a><ul>
+                        
+                <li>
+                    <a href="#symbol-relocation" aria-label="Symbol relocation">Symbol relocation</a></li>
+                <li>
+                    <a href="#dynamic-linking-infrastructure" aria-label="Dynamic linking infrastructure">Dynamic linking infrastructure</a></li>
+                <li>
+                    <a href="#runtime-metadata" aria-label="Runtime metadata">Runtime metadata</a></li>
+                <li>
+                    <a href="#dynamic-linking-at-runtime" aria-label="Dynamic linking at runtime">Dynamic linking at runtime</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#a-methodology-for-linking-errors" aria-label="A methodology for linking errors">A methodology for linking errors</a><ul>
+                        
+                <li>
+                    <a href="#is-it-even-a-linking-error" aria-label="Is it even a linking error?">Is it even a linking error?</a></li>
+                <li>
+                    <a href="#find-the-guilty-symbols" aria-label="Find the guilty symbols">Find the guilty symbols</a></li></ul>
+                </li>
+                <li>
+                    <a href="#closing-remarks" aria-label="Closing remarks">Closing remarks</a></li>
+                <li>
+                    <a href="#further-reading" aria-label="Further reading">Further reading</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><blockquote>
+<p>This is the first article in an introductory series about compilation, linking, and runtime libraries. I strongly suggest you start here unless you&rsquo;re comfortable with these concepts.</p>
+<p>The <a href="/posts/python-decimal-module-performance-optimization/">second article</a> shows a real-world case study where a missing compiler runtime symbol caused a 6x performance regression in a key journey heavily reliant on Python&rsquo;s <code>decimal</code> module.</p>
+<p>The <a href="/posts/whats-the-compiler-low-level-runtime-library/">final article</a> explore what are compiler low-level runtime libraries and when they&rsquo;re used by referring to the missing symbol in the case study: <code>__udivti3</code>.</p></blockquote>
+<p>My case study on <a href="/posts/python-decimal-module-performance-optimization/">fixing a symbol error in the Python interpreter</a> shows how hard but impactful these problems can be: a subtle bug in how we build the C <code>decimal</code> library led to a key journey being 6x slower.</p>
+<p>The fix was just one line in the build file to mitigate the unassuming error <code>symbol not found</code> error:</p>
+<pre tabindex="0"><code class="language-plz" data-lang="plz">deps = [&#34;@//cc/clang:compiler-rt_builtins&#34;]
+</code></pre><p>In this post I want to attempt building that context and sharing a methodology for how you can approach it. I&rsquo;ll explain the concepts using C  because it&rsquo;s arguably the most influential programming language, but the general principles can be applied to any.</p>
+<h2 id="what-is-c">What is C?<a hidden class="anchor" aria-hidden="true" href="#what-is-c">#</a></h2>
+<p>C is a programming language. As such, C is used in C code like:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Hello, world!&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Which can be compiled with a C compiler like <code>gcc</code> into an executable and run by a computer.</p>
+<blockquote>
+<p>An exacutable is a type of binary file that can be loaded and executed by a machine. Some of the common characteristics of executable files are:</p>
+<ul>
+<li>A defined entrypoint, which is what the machine starts executing when the program starts</li>
+<li>No unresolved symbols (this will be explained later)</li>
+<li>Metadata for how to execute the program</li>
+</ul></blockquote>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ gcc main.c <span style="color:#75715e"># outputs the executable &#39;a.out&#39;</span>
+</span></span><span style="display:flex;"><span>$ ./a.out
+</span></span><span style="display:flex;"><span>Hello, world!
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Yet like any language, C is defined by a specification. In C&rsquo;s case it&rsquo;s ISO C, which also defines the standard libraries. For example, <code>printf</code> is defined by ISO C in English like this:</p>
+<p><img alt="Image from an ISO C draft defining printf as a series of paragraphs in English rather than code." loading="lazy" src="/images/printf-iso-c.jpg"></p>
+<p>The standard library implementations — such as <code>stdio</code> — are separate from the language itself. The two most common implementations are:</p>
+<ul>
+<li><code>glibc</code>, which emphasizes feature-richness and GNU compatibility</li>
+<li><code>musl</code>, which emphasizes POSIX correctness and simplicity</li>
+</ul>
+<p>For example, <code>system</code> is a C standard library function and the <code>POSIX</code> standard doesn&rsquo;t require <code>system</code> to be thread-safe. <code>glibc</code> implements <code>system</code> with thread-safety as a nice-to-have, while <code>musl</code> doesn&rsquo;t to be strict to the standard.</p>
+<p>Thus, if you look at the <code>glibc</code> and <code>musl</code> source code you&rsquo;ll find many overlapping function signatures but different implementations.</p>
+<blockquote>
+<p>UNIX is an operating system started by AT&amp;T in 1969. It created many copy-cat operating systems which made application development difficult because the underlying system calls weren&rsquo;t the same.</p>
+<p>The most widely used UNIX-like operating systems today are Linux (or GNU/Linux if you insist) and macOS.</p>
+<p>POSIX, or Portable Operating System Interface, is a set of standard UNIX-based operating system interfaces to make it easier to write applications for UNIX-like systems. The standardization of many operating system function signatures makes applications more portable across POSIX-compliant operating systems.</p></blockquote>
+<h2 id="the-c-compilation-process">The C compilation process<a hidden class="anchor" aria-hidden="true" href="#the-c-compilation-process">#</a></h2>
+<p>We&rsquo;ll examine this hello world program through each stage of the compilation process.</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> age;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">char</span> guest[] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Bob&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">char</span> host[] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Fred&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Hello, %s! My name is %s.&#34;</span>, guest, host);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>You&rsquo;re probably thinking I&rsquo;m using variables in a gross way. You&rsquo;re right! This is on purpose because it&rsquo;ll help us explore the different sections in binary file formats like ELF.</p>
+<blockquote>
+<p>Object files are only aware of global variables because they&rsquo;re initialized at compile-time, not local variables initialized at runtime — that&rsquo;s why you&rsquo;ll never find symbols for local variables in executable or object files. Thus, having global variables allows us to see them in a binary&rsquo;s symbol table</p></blockquote>
+<h3 id="preprocessing">Preprocessing<a hidden class="anchor" aria-hidden="true" href="#preprocessing">#</a></h3>
+<p>The first stage is preprocessing. The preprocessor takes a <code>.c</code> as an input, extends its source code, and output and intermediary <code>.i</code> file type that&rsquo;s extended C code.</p>
+<p>This file&rsquo;s very different because if you look at it you&rsquo;ll notice many function signatures of C standard library functions.</p>
+<p><img alt="Standard library functions earlier in the file" loading="lazy" src="/images/extern-functions.jpg"></p>
+<p>Our source code is only at the very end, like we wrote it.</p>
+<p><img alt="Our source code" loading="lazy" src="/images/extended-source-code.jpg"></p>
+<h3 id="compilation">Compilation<a hidden class="anchor" aria-hidden="true" href="#compilation">#</a></h3>
+<p>The assembly stage takes the <code>.i</code> C file and outputs an assembly <code>.s</code> file. If you haven&rsquo;t looked at assembly before, it&rsquo;s a symbolic representation of machine instructions.</p>
+<p>For example, <code>1 + 1</code> might look like:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-nasm" data-lang="nasm"><span style="display:flex;"><span><span style="color:#a6e22e">mov</span> eax, <span style="color:#ae81ff">1</span>    <span style="color:#75715e">; Put first 1 into eax register</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">add</span> eax, <span style="color:#ae81ff">1</span>    <span style="color:#75715e">; Add second 1 to eax</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Instead of:</p>
+<pre tabindex="0"><code class="language-x86" data-lang="x86">B8 01 00 00 00    ; mov eax, 1
+83 C0 01          ; add eax, 1
+</code></pre><h3 id="assembling">Assembling<a hidden class="anchor" aria-hidden="true" href="#assembling">#</a></h3>
+<p>The assembly stage takes the <code>.s</code> assembly file and outputs a <code>.o</code> object file. The difference is that you can use utilities to examine binary files and their symbols, which is very useful to understand how code maps to binary and how a machine executes it.</p>
+<blockquote>
+<p>Think of symbols as name-value associations for functions and variables. The name is the function or variable&rsquo;s name, and the value is the memory location of the function&rsquo;s code or the variable&rsquo;s value.</p></blockquote>
+<p>For example, the above program has a symbol table of only 5 symbols:</p>
+<pre tabindex="0"><code class="language-symbolstable" data-lang="symbolstable">0000000000000000 B age
+0000000000000000 D guest
+0000000000000004 D host
+0000000000000000 T main
+                 U printf
+</code></pre><blockquote>
+<p>The functions and variables from the C standard library in the <code>.i</code> file aren&rsquo;t in the symbol table because those <code>extern</code> references just declare &ldquo;this has been defined elsewhere&rdquo;.</p>
+<p>Thus, the symbol itself is found in the binary where they&rsquo;re defined — hence why this object file only has 5 symbols and not more.</p></blockquote>
+<p>Each column in the table represents a different type of value</p>
+<ol>
+<li>The memory location of the symbol&rsquo;s value on a per section basis</li>
+<li>The section of the binary file the symbol&rsquo;s in (e.g. <code>.data</code>, <code>.text</code>, etc)</li>
+<li>The name of the symbol</li>
+</ol>
+<p>This is where the weird variable setup comes in play to show different section in a binary file:</p>
+<ul>
+<li><code>B</code> (or <code>.bss</code>) has uninitialized read-write data, and <code>age</code> was defined without a value</li>
+<li><code>D</code> (<code>.data</code>) has initialized read-write data, i.e. initialized variables like <code>guest</code> and <code>host</code></li>
+<li><code>T</code> (<code>.text</code>) has executable-only data, i.e. code like <code>main</code></li>
+<li><code>U</code> has undefined symbols like <code>printf</code> (because it&rsquo;s defined in a different object file)</li>
+</ul>
+<blockquote>
+<p>Symbols are organized into different sections in a binary file. These change slightly according to the binary format, which is operating system-specific. For example, Linux&rsquo;s is ELF and MacOS&rsquo; is Mach-O.</p>
+<p>As you might&rsquo;ve noticed above, the byte value for a symbol&rsquo;s location is section-dependent in object files. Thus, the first symbol in a section will always be in byte 0.</p></blockquote>
+<h3 id="linking">Linking<a hidden class="anchor" aria-hidden="true" href="#linking">#</a></h3>
+<p>So far we&rsquo;ve gone from a file in C that prints values to <code>stdout</code> to an object file. However, there&rsquo;s many reasons we can&rsquo;t just run it:</p>
+<ul>
+<li>We have an unreferenced symbol in <code>printf</code></li>
+<li>We don&rsquo;t have an entrypoint that the operating system Loader can use to start the program</li>
+<li>The memory addresses in our object file are relative: we still need to relocate symbols to their actual memory locations where the code and data will reside at runtime</li>
+</ul>
+<p>Broadly speaking, this is what we&rsquo;ll providing in this final linking phase.</p>
+<p>Linking is the process of combining multiple object files into an executable that the operating system can load and run. The linker resolves symbol references, performs relocations to establish final memory addresses, and adds necessary runtime metadata like the program entry point and dynamic linking information.</p>
+<p>When we finish the compilation process of the program we started with we get the following symbol table. This is a lot, so we&rsquo;ll break it down into the most important pieces.</p>
+<pre tabindex="0"><code class="language-symbolstable" data-lang="symbolstable">000000000000038c r  abi_tag
+0000000000004020 B  age
+0000000000004019 B  _bss_start
+000000000000401c b  completed.0
+                w  _cxa_finalize@GLIBC_2.2.5
+0000000000004000 D  _data_start
+0000000000004000 W  data_start
+0000000000001090 t  deregister_tm_clones
+0000000000001100 t  _do_global_dtors_aux
+00000000000003dc0 d  _do_global_dtors_aux_fini_array_entry
+0000000000004008 D  _dso_handle
+00000000000003dc8 d  _DYNAMIC
+0000000000004019 D  _edata
+0000000000004028 B  _end
+0000000000001180 T  _fini
+0000000000001140 t  frame_dummy
+00000000000003db8 d  _frame_dummy_init_array_entry
+0000000000002100 r  _FRAME_END_
+00000000000003fb8 d  _GLOBAL_OFFSET_TABLE_
+                w  _gmon_start
+0000000000002020 r  _GNU_EH_FRAME_HDR
+0000000000004010 D  guest
+0000000000004014 D  host
+0000000000001000 T  _init
+0000000000002000 R  _IO_stdin_used
+                w  _ITM_deregisterTMCloneTable
+                w  _ITM_registerTMCloneTable
+                U  _libc_start_main@GLIBC_2.34
+0000000000001149 T  main
+                U  printf@GLIBC_2.2.5
+00000000000010c0 t  register_tm_clones
+0000000000001060 T  _start
+0000000000004020 D  _TMC_END_
+</code></pre><h4 id="symbol-relocation">Symbol relocation<a hidden class="anchor" aria-hidden="true" href="#symbol-relocation">#</a></h4>
+<p>The first thing to note is that our 5 symbols are still referenced.</p>
+<pre tabindex="0"><code class="language-symbolstable" data-lang="symbolstable">...
+0000000000004020 B  age
+...
+0000000000004010 D  guest
+0000000000004014 D  host
+...
+0000000000001149 T  main
+                U  printf@GLIBC_2.2.5
+...
+</code></pre><p>However, the byte values are different because the symbols have been relocated to their final memory addresses. This is important because the program needs absolute addresses to reference its code and data at runtime. Without relocation, instructions wouldn&rsquo;t know where to find their operands in memory or which addresses to jump to when calling functions.</p>
+<p>As part of the symbol resolution and relocation, the linker also adds symbols to mark the boundaries of the sections as shown below.</p>
+<pre tabindex="0"><code class="language-symbolstable" data-lang="symbolstable">0000000000004019 B  _bss_start
+...
+0000000000004000 D  _data_start
+...
+0000000000004019 D  _edata
+...
+</code></pre><h4 id="dynamic-linking-infrastructure">Dynamic linking infrastructure<a hidden class="anchor" aria-hidden="true" href="#dynamic-linking-infrastructure">#</a></h4>
+<p>Since this binary is dynamically linked, The linker also adds symbols so that we can dynamically link <code>printf</code> (which is still unresovled) at runtime.</p>
+<pre tabindex="0"><code class="language-symbolstable" data-lang="symbolstable">...
+                w  _cxa_finalize@GLIBC_2.2.5
+...
+0000000000004008 D  _dso_handle
+...
+00000000000003dc8 d  _DYNAMIC
+...
+00000000000003fb8 d  _GLOBAL_OFFSET_TABLE_
+...
+                U  _libc_start_main@GLIBC_2.34
+...
+                U  printf@GLIBC_2.2.5
+</code></pre><p>We&rsquo;ll gloss over this and come back to dynamic linking later.</p>
+<h4 id="runtime-metadata">Runtime metadata<a hidden class="anchor" aria-hidden="true" href="#runtime-metadata">#</a></h4>
+<p>Based on what we&rsquo;ve seen so far we still need something to help the operating system and runtime environment manage the program&rsquo;s execution. They come from the C runtime object files (i.e. <code>crt0.o</code>, <code>crti.o</code>, and <code>crtn.o</code>).</p>
+<p>Some of these come from the C runtime object files, which manage the entry point to the program (<code>_start</code>) and the program&rsquo;s initialization (<code>_init</code>) and finalization (<code>_fini</code>).</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-md" data-lang="md"><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>0000000000001180 T  _fini
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>0000000000001000 T  _init
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>0000000000001060 T  _start
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>These are important because:</p>
+<ul>
+<li><code>_start</code> is the first thing executed in the program</li>
+<li><code>_init</code> runs before <code>main</code> and sets up the runtime environment</li>
+<li><code>_fini</code> runs after <code>main</code> and runs cleanup tasks</li>
+</ul>
+<h4 id="dynamic-linking-at-runtime">Dynamic linking at runtime<a hidden class="anchor" aria-hidden="true" href="#dynamic-linking-at-runtime">#</a></h4>
+<p>By this point we have an executable with an entrypoint that is expecting the dynamic linker to provide the final symbol references that it needs.</p>
+<pre tabindex="0"><code class="language-symbolstable" data-lang="symbolstable">...
+                U  _libc_start_main@GLIBC_2.34
+...
+                U  printf@GLIBC_2.2.5
+...
+</code></pre><p>What the dynamic linker does is to try to load the <code>.so</code> shared object file from the file system from a series of paths (which you can find by using <code>ldd</code> on an executable). This happens at <strong>runtime</strong> when the executable is loaded into memory, not at compile time.</p>
+<h2 id="a-methodology-for-linking-errors">A methodology for linking errors<a hidden class="anchor" aria-hidden="true" href="#a-methodology-for-linking-errors">#</a></h2>
+<h3 id="is-it-even-a-linking-error">Is it even a linking error?<a hidden class="anchor" aria-hidden="true" href="#is-it-even-a-linking-error">#</a></h3>
+<p>As I hope you&rsquo;ve gotten from going through how compilation works, programs are collections of symbols. The symbols include the source code of the programs plus functions and variables needed to manage the program&rsquo;s runtime and link it.</p>
+<p>Thus, you&rsquo;ll have linking problems when your executable either</p>
+<ul>
+<li>Can&rsquo;t be built because of a missing symbol</li>
+<li>Builds but has a runtime error because of a missing symbol</li>
+</ul>
+<p>If it&rsquo;s a linking error you&rsquo;ll see errors such as (but not limited to) <code>undefined reference</code>, <code>symbol not found</code>, or <code>multiple definition of</code>.</p>
+<h3 id="find-the-guilty-symbols">Find the guilty symbols<a hidden class="anchor" aria-hidden="true" href="#find-the-guilty-symbols">#</a></h3>
+<p>If it is a linking error, it&rsquo;s probably related to a missing or redundant symbol. This means you&rsquo;ll need to find the guilty symbol and either link the missing <code>.so</code> at runtime or remove the duplicate symbol.</p>
+<p>For the purposes of time I won&rsquo;t get into details, but you should look at using these tools or the equivalent for your operating system:</p>
+<ul>
+<li>List dynamic dependencies to list the shared objects being linked to your binary (<code>ldd</code>)</li>
+<li>Symbol inspection to verify if the shared object has the symbol you&rsquo;re looking for (<code>nm</code> and <code>objdump</code> if you need more functionality)</li>
+<li>Check the paths referenced by the dynamic linker (<a href="https://ftp.math.utah.edu/u/ma/hohn/linux/misc/elf/node16.html">see an excellent guide here</a>)</li>
+</ul>
+<h2 id="closing-remarks">Closing remarks<a hidden class="anchor" aria-hidden="true" href="#closing-remarks">#</a></h2>
+<p>Tools like <code>ldd</code> and <code>nm</code> help a ton. I <em>really</em> would not like to solve a linking problem without them!</p>
+<p>However, as I showed in <a href="/posts/python-decimal-module-performance-optimization/">my linking case study on the Python interpreter</a> there are some problems where you just <em>need the knowledge and context</em>: <code>ldd</code> won&rsquo;t point you to a low-level compiler runtime library or the C runtime. Hopefully, this article is a primer on how to think about these problems and, more broadly, how to think about what programs are and how they compile.</p>
+<h2 id="further-reading">Further reading<a hidden class="anchor" aria-hidden="true" href="#further-reading">#</a></h2>
+<p>If you want to continue learning about compilation and linking, I highly recommend:</p>
+<ul>
+<li><a href="https://www.amazon.com/Computer-Systems-Programmers-Perspective-3rd/dp/013409266X">Computer Systems: An Application Programmer&rsquo;s Perspective</a> is great at building up the necessary context and introduces linking in chapter 7</li>
+<li><a href="https://www.lurklurk.org/linkers/linkers.html">Beginner&rsquo;s Guide to Linkers</a></li>
+<li>Ian Lance Taylor&rsquo;s <a href="https://lwn.net/Articles/276782/">20 part blog post on linkers</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://josedelapuente.com/tags/compilation/">Compilation</a></li>
+      <li><a href="https://josedelapuente.com/tags/linking/">Linking</a></li>
+      <li><a href="https://josedelapuente.com/tags/symbols/">Symbols</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+</body>
+
+</html>

@@ -4,36 +4,76 @@
     <title>Tags on José de la Puente | Python and Platform engineering</title>
     <link>https://josedelapuente.com/tags/</link>
     <description>Recent content in Tags on José de la Puente | Python and Platform engineering</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <image>
+      <title>José de la Puente | Python and Platform engineering</title>
+      <url>https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg</url>
+      <link>https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg</link>
+    </image>
+    <generator>Hugo -- 0.146.5</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 07 Dec 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 26 Mar 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://josedelapuente.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Book</title>
+      <link>https://josedelapuente.com/tags/book/</link>
+      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/tags/book/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Fiction</title>
+      <link>https://josedelapuente.com/tags/fiction/</link>
+      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/tags/fiction/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Unix</title>
+      <link>https://josedelapuente.com/tags/unix/</link>
+      <pubDate>Fri, 27 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/tags/unix/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Assembly</title>
+      <link>https://josedelapuente.com/tags/assembly/</link>
+      <pubDate>Sat, 14 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/tags/assembly/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>C</title>
+      <link>https://josedelapuente.com/tags/c/</link>
+      <pubDate>Sat, 14 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/tags/c/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Compilation</title>
       <link>https://josedelapuente.com/tags/compilation/</link>
-      <pubDate>Sat, 07 Dec 2024 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 14 Dec 2024 00:00:00 +0000</pubDate>
       <guid>https://josedelapuente.com/tags/compilation/</guid>
       <description></description>
     </item>
     <item>
       <title>Linking</title>
       <link>https://josedelapuente.com/tags/linking/</link>
-      <pubDate>Sat, 07 Dec 2024 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 14 Dec 2024 00:00:00 +0000</pubDate>
       <guid>https://josedelapuente.com/tags/linking/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Python</title>
-      <link>https://josedelapuente.com/tags/python/</link>
-      <pubDate>Sat, 07 Dec 2024 00:00:00 +0000</pubDate>
-      <guid>https://josedelapuente.com/tags/python/</guid>
       <description></description>
     </item>
     <item>
       <title>Symbols</title>
       <link>https://josedelapuente.com/tags/symbols/</link>
-      <pubDate>Sat, 07 Dec 2024 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 14 Dec 2024 00:00:00 +0000</pubDate>
       <guid>https://josedelapuente.com/tags/symbols/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Python</title>
+      <link>https://josedelapuente.com/tags/python/</link>
+      <pubDate>Tue, 10 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/tags/python/</guid>
       <description></description>
     </item>
     <item>
@@ -48,13 +88,6 @@
       <link>https://josedelapuente.com/tags/metrics/</link>
       <pubDate>Mon, 16 Sep 2024 00:00:00 +0000</pubDate>
       <guid>https://josedelapuente.com/tags/metrics/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Assembly</title>
-      <link>https://josedelapuente.com/tags/assembly/</link>
-      <pubDate>Mon, 19 Feb 2024 00:00:00 +0000</pubDate>
-      <guid>https://josedelapuente.com/tags/assembly/</guid>
       <description></description>
     </item>
     <item>

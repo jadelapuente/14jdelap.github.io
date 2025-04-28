@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
-<title>Horus: a new observability system for distributed microservices | José de la Puente</title>
+<meta name="robots" content="index, follow">
+<title>Horus: a new observability system for distributed microservices | José de la Puente | Python and Platform engineering</title>
 <meta name="keywords" content="observability, microservices, open source software">
 <meta name="description" content="How can we make better open source observability systems?">
 <meta name="author" content="">
-<link rel="canonical" href="http://localhost:1313/posts/horus/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.7ed4672a8b28b1fde2cae008e115931c8ace7d438a0704966f4f970bb3814dda.css" integrity="sha256-ftRnKososf3iyuAI4RWTHIrOfUOKBwSWb0&#43;XC7OBTdo=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="canonical" href="https://josedelapuente.com/posts/horus/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.07bf49839e92734c439e460bc8db0e3fafc1e6322f5523cee1f520bdad544c62.css" integrity="sha256-B79Jg56Sc0xDnkYLyNsOP6/B5jIvVSPO4fUgva1UTGI=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://josedelapuente.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://josedelapuente.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://josedelapuente.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://josedelapuente.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://josedelapuente.com/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/horus/">
+<link rel="alternate" hreflang="en" href="https://josedelapuente.com/posts/horus/">
 <noscript>
     <style>
         #theme-toggle,
@@ -27,7 +27,74 @@
         }
 
     </style>
-</noscript>
+</noscript><meta property="og:url" content="https://josedelapuente.com/posts/horus/">
+  <meta property="og:site_name" content="José de la Puente | Python and Platform engineering">
+  <meta property="og:title" content="Horus: a new observability system for distributed microservices">
+  <meta property="og:description" content="How can we make better open source observability systems?">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2021-12-19T00:00:00+00:00">
+    <meta property="article:modified_time" content="2021-12-19T00:00:00+00:00">
+    <meta property="article:tag" content="Observability">
+    <meta property="article:tag" content="Microservices">
+    <meta property="article:tag" content="Open Source Software">
+      <meta property="og:image" content="https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg">
+<meta name="twitter:title" content="Horus: a new observability system for distributed microservices">
+<meta name="twitter:description" content="How can we make better open source observability systems?">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://josedelapuente.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Horus: a new observability system for distributed microservices",
+      "item": "https://josedelapuente.com/posts/horus/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Horus: a new observability system for distributed microservices",
+  "name": "Horus: a new observability system for distributed microservices",
+  "description": "How can we make better open source observability systems?",
+  "keywords": [
+    "observability", "microservices", "open source software"
+  ],
+  "articleBody": "Open source observability software has a problem: gluing things together is time intensive and confusing.\nDespite the wonderful advance of OpenTelemetry, which is making telemetry data generation increasingly simple and lowering the switching costs between observability systems, we still need a plug-and-play solution for what to do with that data.\nThat’s what I set out to do with some colleagues when we built Horus.\nEasy observability for microservices Horus is a full-stack observability system. It’s made to make observability easy for distributed services by allowing you to:\nInstrument your data with a few lines of code with horus-agent (link) Out-of-the-box data processing, storage, and visualization by spinning up the Docker containers in a VPS Connecting metrics to related traces to help you piece together your telemetry data The crux of the system is the Docker network with the containers.\nIf this sounds interesting, you might enjoy reasing our case study which explores the problems, existing solutions, and the trade-offs we made when building Horus.\n",
+  "wordCount" : "164",
+  "inLanguage": "en",
+  "image": "https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg","datePublished": "2021-12-19T00:00:00Z",
+  "dateModified": "2021-12-19T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://josedelapuente.com/posts/horus/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "José de la Puente | Python and Platform engineering",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://josedelapuente.com/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
 
 <body class=" dark" id="top">
@@ -35,7 +102,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="José de la Puente">José de la Puente</a>
+            <a href="https://josedelapuente.com/" accesskey="h" title="José de la Puente (Alt + H)">José de la Puente</a>
         </div>
         <ul id="menu">
         </ul>
@@ -59,14 +126,15 @@
   <div class="post-content"><p>Open source observability software has a problem: gluing things together is time intensive and confusing.</p>
 <p>Despite the wonderful advance of <a href="https://opentelemetry.io/">OpenTelemetry</a>, which is making telemetry data generation increasingly simple and lowering the switching costs between observability systems, we still need a plug-and-play solution for what to <em>do</em> with that data.</p>
 <p>That&rsquo;s what I set out to do with some colleagues when we built <a href="https://tryhorus.com/">Horus</a>.</p>
+<h2 id="easy-observability-for-microservices">Easy observability for microservices<a hidden class="anchor" aria-hidden="true" href="#easy-observability-for-microservices">#</a></h2>
 <p>Horus is a full-stack observability system. It&rsquo;s made to make observability easy for distributed services by allowing you to:</p>
-<ul>
-<li>Instrument your data with the <code>horus-agent</code> package and few lines of code (<a href="https://www.npmjs.com/package/horus-agent">link</a>)</li>
-<li>Spin up <code>Horus</code> in Docker to process, store, and visualize your data</li>
-<li>Help you investigate by connecting your <strong>metrics to related traces</strong></li>
-</ul>
-<p><img loading="lazy" src="image.png" alt="alt text"  />
-</p>
+<ol>
+<li>Instrument your data with a few lines of code with <code>horus-agent</code> (<a href="https://www.npmjs.com/package/horus-agent">link</a>)</li>
+<li>Out-of-the-box data processing, storage, and visualization by spinning up the Docker containers in a VPS</li>
+<li>Connecting <strong>metrics to related traces</strong> to help you piece together your telemetry data</li>
+</ol>
+<p>The crux of the system is the Docker network with the containers.</p>
+<p><img alt="Image showing Horus&rsquo; architecture." loading="lazy" src="/images/horus-architecture.png"></p>
 <p>If this sounds interesting, you might enjoy reasing our <a href="https://tryhorus.com/case-study">case study</a> which explores the problems, existing solutions, and the trade-offs we made when building Horus.</p>
 
 
@@ -74,9 +142,9 @@
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/observability/">Observability</a></li>
-      <li><a href="http://localhost:1313/tags/microservices/">Microservices</a></li>
-      <li><a href="http://localhost:1313/tags/open-source-software/">Open Source Software</a></li>
+      <li><a href="https://josedelapuente.com/tags/observability/">Observability</a></li>
+      <li><a href="https://josedelapuente.com/tags/microservices/">Microservices</a></li>
+      <li><a href="https://josedelapuente.com/tags/open-source-software/">Open Source Software</a></li>
     </ul>
   </footer>
 </article>

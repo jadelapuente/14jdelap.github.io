@@ -4,14 +4,40 @@
     <title>Categories on José de la Puente | Python and Platform engineering</title>
     <link>https://josedelapuente.com/categories/</link>
     <description>Recent content in Categories on José de la Puente | Python and Platform engineering</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <image>
+      <title>José de la Puente | Python and Platform engineering</title>
+      <url>https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg</url>
+      <link>https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg</link>
+    </image>
+    <generator>Hugo -- 0.146.5</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 07 Dec 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 26 Mar 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://josedelapuente.com/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Book Reviews</title>
+      <link>https://josedelapuente.com/categories/book-reviews/</link>
+      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/categories/book-reviews/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Software Engineering</title>
+      <link>https://josedelapuente.com/categories/software-engineering/</link>
+      <pubDate>Fri, 27 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/categories/software-engineering/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>C</title>
+      <link>https://josedelapuente.com/categories/c/</link>
+      <pubDate>Sat, 14 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/categories/c/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Python</title>
       <link>https://josedelapuente.com/categories/python/</link>
-      <pubDate>Sat, 07 Dec 2024 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 10 Dec 2024 00:00:00 +0000</pubDate>
       <guid>https://josedelapuente.com/categories/python/</guid>
       <description></description>
     </item>
@@ -27,13 +53,6 @@
       <link>https://josedelapuente.com/categories/technology/</link>
       <pubDate>Mon, 16 Sep 2024 00:00:00 +0000</pubDate>
       <guid>https://josedelapuente.com/categories/technology/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Software Engineering</title>
-      <link>https://josedelapuente.com/categories/software-engineering/</link>
-      <pubDate>Mon, 19 Feb 2024 00:00:00 +0000</pubDate>
-      <guid>https://josedelapuente.com/categories/software-engineering/</guid>
       <description></description>
     </item>
   </channel>

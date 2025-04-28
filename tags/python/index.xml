@@ -4,16 +4,21 @@
     <title>Python on José de la Puente | Python and Platform engineering</title>
     <link>https://josedelapuente.com/tags/python/</link>
     <description>Recent content in Python on José de la Puente | Python and Platform engineering</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <image>
+      <title>José de la Puente | Python and Platform engineering</title>
+      <url>https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg</url>
+      <link>https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg</link>
+    </image>
+    <generator>Hugo -- 0.146.5</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 07 Dec 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 10 Dec 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://josedelapuente.com/tags/python/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>6x&#39;ing performance by fixing a linking error in the Python interpreter</title>
-      <link>https://josedelapuente.com/posts/python-interpreter-performance-symbol-error/</link>
-      <pubDate>Sat, 07 Dec 2024 00:00:00 +0000</pubDate>
-      <guid>https://josedelapuente.com/posts/python-interpreter-performance-symbol-error/</guid>
-      <description>How I debugged a high-impact, multi-year bug in a Python interpreter</description>
+      <title>Python performance: 6x speedup by fixing a decimal module linking error</title>
+      <link>https://josedelapuente.com/posts/python-decimal-module-performance-optimization/</link>
+      <pubDate>Tue, 10 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/posts/python-decimal-module-performance-optimization/</guid>
+      <description>A case study on debugging a symbol error in the Python interpreters.</description>
     </item>
   </channel>
 </rss>

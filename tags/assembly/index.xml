@@ -4,10 +4,22 @@
     <title>Assembly on José de la Puente | Python and Platform engineering</title>
     <link>https://josedelapuente.com/tags/assembly/</link>
     <description>Recent content in Assembly on José de la Puente | Python and Platform engineering</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <image>
+      <title>José de la Puente | Python and Platform engineering</title>
+      <url>https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg</url>
+      <link>https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg</link>
+    </image>
+    <generator>Hugo -- 0.146.5</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 19 Feb 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 14 Dec 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://josedelapuente.com/tags/assembly/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Understanding compiler runtime libraries: when hardware needs software&#39;s help</title>
+      <link>https://josedelapuente.com/posts/whats-the-compiler-low-level-runtime-library/</link>
+      <pubDate>Sat, 14 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/posts/whats-the-compiler-low-level-runtime-library/</guid>
+      <description>Learn how the compiler inserts functions to execute operations that the machine can&amp;#39;t perform with native instructions.</description>
+    </item>
     <item>
       <title>Assembly Fibonacci</title>
       <link>https://josedelapuente.com/posts/assembly-fibonacci/</link>

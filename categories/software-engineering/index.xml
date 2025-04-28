@@ -4,10 +4,43 @@
     <title>Software Engineering on José de la Puente | Python and Platform engineering</title>
     <link>https://josedelapuente.com/categories/software-engineering/</link>
     <description>Recent content in Software Engineering on José de la Puente | Python and Platform engineering</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <image>
+      <title>José de la Puente | Python and Platform engineering</title>
+      <url>https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg</url>
+      <link>https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg</link>
+    </image>
+    <generator>Hugo -- 0.146.5</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 19 Feb 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 27 Dec 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://josedelapuente.com/categories/software-engineering/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>What are regular Unix files?</title>
+      <link>https://josedelapuente.com/posts/what-are-unix-files/</link>
+      <pubDate>Fri, 27 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/posts/what-are-unix-files/</guid>
+      <description>A primer on regular files and their key characteristics</description>
+    </item>
+    <item>
+      <title>Understanding compiler runtime libraries: when hardware needs software&#39;s help</title>
+      <link>https://josedelapuente.com/posts/whats-the-compiler-low-level-runtime-library/</link>
+      <pubDate>Sat, 14 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/posts/whats-the-compiler-low-level-runtime-library/</guid>
+      <description>Learn how the compiler inserts functions to execute operations that the machine can&amp;#39;t perform with native instructions.</description>
+    </item>
+    <item>
+      <title>Python performance: 6x speedup by fixing a decimal module linking error</title>
+      <link>https://josedelapuente.com/posts/python-decimal-module-performance-optimization/</link>
+      <pubDate>Tue, 10 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/posts/python-decimal-module-performance-optimization/</guid>
+      <description>A case study on debugging a symbol error in the Python interpreters.</description>
+    </item>
+    <item>
+      <title>How to diagnose and mitigate linking errors</title>
+      <link>https://josedelapuente.com/posts/how-to-diagnose-and-mitigate-linking-errors/</link>
+      <pubDate>Sat, 07 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/posts/how-to-diagnose-and-mitigate-linking-errors/</guid>
+      <description>How to think about programs, how they compile, and how to mitigate hard linking errors.</description>
+    </item>
     <item>
       <title>Assembly Fibonacci</title>
       <link>https://josedelapuente.com/posts/assembly-fibonacci/</link>
@@ -24,9 +57,9 @@
     </item>
     <item>
       <title>Horus: a new observability system for distributed microservices</title>
-      <link>https://josedelapuente.com/posts/horus/horus/</link>
+      <link>https://josedelapuente.com/posts/horus/</link>
       <pubDate>Sun, 19 Dec 2021 00:00:00 +0000</pubDate>
-      <guid>https://josedelapuente.com/posts/horus/horus/</guid>
+      <guid>https://josedelapuente.com/posts/horus/</guid>
       <description>How can we make better open source observability systems?</description>
     </item>
   </channel>

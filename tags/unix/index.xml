@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Unix on José de la Puente</title>
-    <link>http://localhost:1313/tags/unix/</link>
-    <description>Recent content in Unix on José de la Puente</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <title>Unix on José de la Puente | Python and Platform engineering</title>
+    <link>https://josedelapuente.com/tags/unix/</link>
+    <description>Recent content in Unix on José de la Puente | Python and Platform engineering</description>
+    <image>
+      <title>José de la Puente | Python and Platform engineering</title>
+      <url>https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg</url>
+      <link>https://josedelapuente.com/images/The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg</link>
+    </image>
+    <generator>Hugo -- 0.146.5</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 03 Apr 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/unix/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 27 Dec 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://josedelapuente.com/tags/unix/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>From proc to task: how Linux changed processes</title>
-      <link>http://localhost:1313/posts/history-of-processes/</link>
-      <pubDate>Wed, 03 Apr 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/history-of-processes/</guid>
-      <description>How Linux redefined the internal implementation of processes and threads around memory mappings.</description>
+      <title>What are regular Unix files?</title>
+      <link>https://josedelapuente.com/posts/what-are-unix-files/</link>
+      <pubDate>Fri, 27 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>https://josedelapuente.com/posts/what-are-unix-files/</guid>
+      <description>A primer on regular files and their key characteristics</description>
     </item>
   </channel>
 </rss>
