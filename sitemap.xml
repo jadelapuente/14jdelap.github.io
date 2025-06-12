@@ -2,31 +2,19 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://josedelapuente.com/tags/book/</loc>
-    <lastmod>2025-03-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://josedelapuente.com/posts/flowers-for-algernon/</loc>
-    <lastmod>2025-03-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://josedelapuente.com/categories/book-reviews/</loc>
-    <lastmod>2025-03-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://josedelapuente.com/categories/</loc>
-    <lastmod>2025-03-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://josedelapuente.com/tags/fiction/</loc>
-    <lastmod>2025-03-26T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://josedelapuente.com/</loc>
-    <lastmod>2025-03-26T00:00:00+00:00</lastmod>
+    <lastmod>2025-04-28T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://josedelapuente.com/posts/</loc>
-    <lastmod>2025-03-26T00:00:00+00:00</lastmod>
+    <lastmod>2025-04-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://josedelapuente.com/tags/</loc>
-    <lastmod>2025-03-26T00:00:00+00:00</lastmod>
+    <loc>https://josedelapuente.com/categories/</loc>
+    <lastmod>2024-12-27T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://josedelapuente.com/categories/software-engineering/</loc>
+    <lastmod>2024-12-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://josedelapuente.com/tags/</loc>
     <lastmod>2024-12-27T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://josedelapuente.com/tags/unix/</loc>
