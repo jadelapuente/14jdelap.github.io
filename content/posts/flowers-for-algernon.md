@@ -7,6 +7,7 @@ tags: ["fiction", "book"]
 categories: ["book reviews"]
 series: ["fiction", "book reviews"]
 ShowToc: false
+draft: True
 ---
 
 It feels strange to say that the highlight of my trip to Dubai was reading 'Flowers for Algernon', a science fiction book I found by chance.
