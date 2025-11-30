@@ -14,6 +14,13 @@ jobs:
         with:
           submodules: true
 
+      - name: Verify theme submodule
+        run: |
+          if [ ! -f "themes/PaperMod/theme.toml" ]; then
+            echo "Error: PaperMod theme not found. Submodule may have failed to initialize."
+            exit 1
+          fi
+
       - name: Checkout destination
         uses: actions/checkout@v4
         if: github.ref == 'refs/heads/main'
@@ -24,7 +31,7 @@ jobs:
 
       - name: Setup Hugo
         run: |
-          curl -L -o /tmp/hugo.tar.gz 'https://github.com/gohugoio/hugo/releases/download/v0.146.5/hugo_0.146.5_linux-amd64.tar.gz'
+          curl -L -o /tmp/hugo.tar.gz 'https://github.com/gohugoio/hugo/releases/download/v0.149.0/hugo_0.149.0_linux-amd64.tar.gz'
           tar -C ${RUNNER_TEMP} -zxvf /tmp/hugo.tar.gz hugo
       - name: Build
         run: ${RUNNER_TEMP}/hugo
@@ -37,5 +44,5 @@ jobs:
           git add .
           git config user.name 'José Agustín de la Puente'
           git config user.email '14jdelap@gmail.com'
-          git commit -m 'Updated site'
+          git diff-index --quiet HEAD || git commit -m 'Updated site'
           git push
