@@ -8,21 +8,6 @@
     <loc>https://josedelapuente.com/posts/</loc>
     <lastmod>2025-04-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://josedelapuente.com/categories/</loc>
-    <lastmod>2024-12-27T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://josedelapuente.com/categories/software-engineering/</loc>
-    <lastmod>2024-12-27T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://josedelapuente.com/tags/</loc>
-    <lastmod>2024-12-27T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://josedelapuente.com/tags/unix/</loc>
-    <lastmod>2024-12-27T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://josedelapuente.com/posts/drafts/what-are-unix-files/</loc>
-    <lastmod>2024-12-27T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://josedelapuente.com/tags/assembly/</loc>
     <lastmod>2024-12-14T00:00:00+00:00</lastmod>
   </url><url>
@@ -32,13 +17,22 @@
     <loc>https://josedelapuente.com/tags/c/</loc>
     <lastmod>2024-12-14T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>https://josedelapuente.com/categories/</loc>
+    <lastmod>2024-12-14T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://josedelapuente.com/tags/compilation/</loc>
     <lastmod>2024-12-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://josedelapuente.com/tags/linking/</loc>
     <lastmod>2024-12-14T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>https://josedelapuente.com/categories/software-engineering/</loc>
+    <lastmod>2024-12-14T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://josedelapuente.com/tags/symbols/</loc>
+    <lastmod>2024-12-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://josedelapuente.com/tags/</loc>
     <lastmod>2024-12-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://josedelapuente.com/posts/whats-the-compiler-low-level-runtime-library/</loc>

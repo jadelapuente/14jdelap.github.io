@@ -11,15 +11,8 @@
     </image>
     <generator>Hugo -- 0.149.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 27 Dec 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 14 Dec 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://josedelapuente.com/categories/software-engineering/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>What are regular Unix files?</title>
-      <link>https://josedelapuente.com/posts/drafts/what-are-unix-files/</link>
-      <pubDate>Fri, 27 Dec 2024 00:00:00 +0000</pubDate>
-      <guid>https://josedelapuente.com/posts/drafts/what-are-unix-files/</guid>
-      <description>A primer on regular files and their key characteristics</description>
-    </item>
     <item>
       <title>Understanding compiler runtime libraries: when hardware needs software&#39;s help</title>
       <link>https://josedelapuente.com/posts/whats-the-compiler-low-level-runtime-library/</link>
