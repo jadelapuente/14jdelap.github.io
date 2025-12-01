@@ -7,6 +7,7 @@ tags: ["unix"]
 categories: ["software engineering"]
 ShowToc: true
 TocOpen: false
+draft: true
 ---
 
 This is meant to be a brief primer on regular files, which are easy to overlook in their simplicity. This isn't meant to be exhaustive, and there's a lot I won't talk about (inodes!, file descriptors!, POSIX permissioning!).
